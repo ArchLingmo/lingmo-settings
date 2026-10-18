@@ -24,6 +24,9 @@
 #include <QStringList>
 #include <QUrl>
 #include <QVariantList>
+#include <QVariantMap>
+
+#include "whisperhw.h"
 
 class QCryptographicHash;
 class QFile;
@@ -85,6 +88,17 @@ class AIModule : public QObject
     // the model file is <whisperModelsDir>/ggml-<subtitle_model>.bin
     Q_PROPERTY(QVariantList whisperModels READ whisperModels NOTIFY whisperChanged)
     Q_PROPERTY(QString whisperRecommended READ whisperRecommended NOTIFY whisperChanged)
+    // This computer (whisperhw.h): { model, gpu, device, reason, speed, installed, download,
+    // upgradePackage, upgradeModel, upgradeHint }; empty while probing
+    Q_PROPERTY(QVariantMap whisperRecommendation READ whisperRecommendation NOTIFY whisperChanged)
+    Q_PROPERTY(bool whisperProbing READ whisperProbing NOTIFY whisperHardwareChanged)
+    // subtitle_model is a heavier family than the recommendation for how whisper runs here
+    Q_PROPERTY(bool whisperModelTooHeavy READ whisperModelTooHeavy NOTIFY whisperChanged)
+    // "large-v3-turbo · CPU · ~0.6× real time"
+    Q_PROPERTY(QString whisperModelSummary READ whisperModelSummary NOTIFY whisperChanged)
+    Q_PROPERTY(bool gpuInstalling READ gpuInstalling NOTIFY gpuInstallChanged)
+    Q_PROPERTY(QString gpuInstallMessage READ gpuInstallMessage NOTIFY gpuInstallChanged)
+    Q_PROPERTY(bool gpuInstallFailed READ gpuInstallFailed NOTIFY gpuInstallChanged)
     Q_PROPERTY(QString whisperModelsDir READ whisperModelsDir CONSTANT)
     Q_PROPERTY(bool whisperCppInstalled READ whisperCppInstalled NOTIFY whisperChanged)
     Q_PROPERTY(bool fasterWhisperInstalled READ fasterWhisperInstalled NOTIFY whisperChanged)
@@ -152,7 +166,13 @@ public:
 
     QVariantList whisperModels() const;
     QString whisperRecommended() const;
-    static bool whisperGpuBackend(const QString &vendor);
+    QVariantMap whisperRecommendation() const;
+    bool whisperProbing() const { return m_hardwareProbing; }
+    bool whisperModelTooHeavy() const;
+    QString whisperModelSummary() const;
+    bool gpuInstalling() const { return m_gpuInstall != nullptr; }
+    QString gpuInstallMessage() const { return m_gpuInstallMessage; }
+    bool gpuInstallFailed() const { return m_gpuInstallFailed; }
     static QString whisperModelsDir();
     bool whisperCppInstalled() const { return !m_whisperCliBinary.isEmpty(); }
     bool fasterWhisperInstalled() const { return !m_fasterWhisperBinary.isEmpty(); }
@@ -187,6 +207,13 @@ public:
     Q_INVOKABLE void removeWhisperModel(const QString &name);
     // Writes subtitle_model; the model must be downloaded
     Q_INVOKABLE void useWhisperModel(const QString &name);
+    // Uses the recommended model, downloading it first when needed
+    Q_INVOKABLE void useRecommendedWhisper();
+    Q_INVOKABLE void useOrDownloadWhisper(const QString &name);
+    // pkexec lingmo-store-helper install ggml-cuda (or pacman), then probes again
+    Q_INVOKABLE void installWhisperGpuSupport();
+    // Probes the hardware and the ggml backends again
+    Q_INVOKABLE void refreshWhisperHardware() { detectHardware(); }
 
     Q_INVOKABLE void openAssistant();
     Q_INVOKABLE void setAssistantTool(const QString &id, bool enabled);
@@ -210,6 +237,8 @@ signals:
     void whisperChanged();
     void subtitleConfigChanged();
     void whisperDownloadChanged();
+    void whisperHardwareChanged();
+    void gpuInstallChanged();
 
 private:
     struct Installed {
@@ -233,19 +262,10 @@ private:
         QString parameters;
     };
 
-    // For the whisper recommendation: llmfit's "system" section when it ran, else our own probe
-    struct Hardware {
-        double ramGb = 0;
-        int cores = 0;
-        double vramGb = 0;
-        QString gpuVendor; // "nvidia", "amd", "intel" or ""
-    };
-
     struct LlmfitResult {
         bool ok = false;
         QString error;
         QString systemSummary;
-        Hardware hardware;
         QList<FitInfo> models; // ollama-usable only, best score first, one per name
     };
 
@@ -283,7 +303,6 @@ private:
     void writeSubtitleValue(const QString &key, const QString &value);
     void detectWhisperEngines();
     void detectHardware();
-    static Hardware probeHardware();
     void readWhisperData();
     void finishWhisperDownload();
     void updateWhisperDetail(qint64 received, qint64 total);
@@ -341,9 +360,14 @@ private:
     qint64 m_speedBytes = 0;
     double m_speed = 0;
 
-    Hardware m_hardware;
-    bool m_hardwareFromLlmfit = false;
+    WhisperHw::Hardware m_whisperHw;
+    bool m_hardwareProbed = false;
     bool m_hardwareProbing = false;
+    QString m_useAfterDownload; // "Use the recommended": use it once downloaded
+    QPointer<QProcess> m_gpuInstall;
+    QString m_gpuInstallMessage;
+    QString m_gpuInstallLog;
+    bool m_gpuInstallFailed = false;
     QString m_whisperCliBinary;
     QString m_fasterWhisperBinary;
     QString m_subtitleBackend;

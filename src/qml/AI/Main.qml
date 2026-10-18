@@ -115,6 +115,7 @@ ItemPage {
         AIModule.clearMessages()
         AIModule.refresh()
         AIModule.loadRecommendations()
+        AIModule.refreshWhisperHardware()
         sectionTimer.start()
     }
 
@@ -1088,6 +1089,127 @@ ItemPage {
                     text: qsTr("Install whisper.cpp in a terminal with “sudo pacman -S whisper-cpp” and come back to this page. faster-whisper is optional: “pipx install whisper-ctranslate2” or the AUR package whisper-ctranslate2.")
                 }
 
+                // What suits this computer: probed again each time the page opens
+                LingmoUI.Card {
+                    id: recommendationCard
+                    readonly property var rec: AIModule.whisperRecommendation
+                    readonly property bool ready: rec.model !== undefined
+                    Layout.fillWidth: true
+                    highlighted: true
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: recommendationCard.padding
+                        spacing: LingmoUI.Units.smallSpacing
+
+                        RowLayout {
+                            spacing: LingmoUI.Units.largeSpacing
+                            Layout.fillWidth: true
+
+                            LingmoUI.IconItem {
+                                source: recommendationCard.rec.gpu ? "video-display" : "cpu"
+                                implicitWidth: LingmoUI.Units.iconSizes.medium
+                                implicitHeight: LingmoUI.Units.iconSizes.medium
+                                visible: recommendationCard.ready
+                            }
+
+                            LingmoUI.Spinner {
+                                visible: !recommendationCard.ready
+                                running: visible
+                                implicitWidth: LingmoUI.Units.iconSizes.medium
+                                implicitHeight: LingmoUI.Units.iconSizes.medium
+                            }
+
+                            ColumnLayout {
+                                spacing: 0
+                                Layout.fillWidth: true
+
+                                Label {
+                                    Layout.fillWidth: true
+                                    wrapMode: Text.WordWrap
+                                    font.weight: Font.DemiBold
+                                    text: recommendationCard.ready
+                                          ? qsTr("Recommended for this computer: %1 · %2").arg(recommendationCard.rec.model).arg(recommendationCard.rec.device)
+                                          : qsTr("Checking this computer…")
+                                }
+
+                                Label {
+                                    Layout.fillWidth: true
+                                    wrapMode: Text.WordWrap
+                                    visible: recommendationCard.ready
+                                    color: LingmoUI.Theme.secondaryTextColor
+                                    text: recommendationCard.ready
+                                          ? recommendationCard.rec.reason
+                                            + (recommendationCard.rec.speed !== "" ? " " + qsTr("Speed: %1").arg(recommendationCard.rec.speed) : "")
+                                          : ""
+                                }
+                            }
+
+                            LingmoUI.ActionButton {
+                                visible: recommendationCard.ready && AIModule.subtitleModel !== recommendationCard.rec.model
+                                         && !AIModule.whisperModelTooHeavy
+                                text: recommendationCard.rec.installed ? qsTr("Use it") : qsTr("Download and use (%1)").arg(recommendationCard.rec.download)
+                                enabled: !AIModule.whisperDownloading
+                                onClicked: {
+                                    page.messageArea = "whisper"
+                                    AIModule.useRecommendedWhisper()
+                                }
+                            }
+
+                            LingmoUI.Badge {
+                                visible: recommendationCard.ready && AIModule.subtitleModel === recommendationCard.rec.model
+                                text: qsTr("In use")
+                                tone: LingmoUI.Theme.greenColor
+                            }
+                        }
+
+                        // A GPU without its ggml backend: install it
+                        LingmoUI.Banner {
+                            Layout.fillWidth: true
+                            visible: recommendationCard.ready && (recommendationCard.rec.upgradePackage !== "" || AIModule.gpuInstallMessage !== "")
+                            type: AIModule.gpuInstallFailed ? LingmoUI.Banner.Error : LingmoUI.Banner.Info
+                            closable: false
+                            iconName: "video-display"
+                            title: recommendationCard.rec.upgradeHint !== "" ? recommendationCard.rec.upgradeHint : ""
+                            text: AIModule.gpuInstallMessage !== ""
+                                  ? AIModule.gpuInstallMessage
+                                  : recommendationCard.rec.upgradePackage !== ""
+                                    ? qsTr("whisper.cpp only uses the graphics card through a ggml backend. With %1 it would use %2.").arg(recommendationCard.rec.upgradePackage).arg(recommendationCard.rec.upgradeModel)
+                                    : ""
+
+                            LingmoUI.ActionButton {
+                                visible: recommendationCard.rec.upgradePackage !== ""
+                                text: AIModule.gpuInstalling ? qsTr("Installing…") : qsTr("Install GPU support")
+                                primary: true
+                                busy: AIModule.gpuInstalling
+                                enabled: !AIModule.gpuInstalling
+                                onClicked: AIModule.installWhisperGpuSupport()
+                            }
+                        }
+                    }
+                }
+
+                // The model in use is heavier than this computer handles well
+                LingmoUI.Banner {
+                    Layout.fillWidth: true
+                    visible: AIModule.whisperModelTooHeavy
+                    type: LingmoUI.Banner.Warning
+                    closable: false
+                    title: visible ? qsTr("%1 is heavy for this computer").arg(AIModule.subtitleModel) : ""
+                    text: visible ? qsTr("Subtitles would run as %1. %2 is faster here and good for Portuguese.")
+                                    .arg(AIModule.whisperModelSummary).arg(recommendationCard.rec.model) : ""
+
+                    LingmoUI.ActionButton {
+                        text: qsTr("Use the recommended")
+                        primary: true
+                        enabled: !AIModule.whisperDownloading
+                        onClicked: {
+                            page.messageArea = "whisper"
+                            AIModule.useRecommendedWhisper()
+                        }
+                    }
+                }
+
                 // Engine
                 RowLayout {
                     spacing: LingmoUI.Units.largeSpacing * 2
@@ -1299,6 +1421,12 @@ ItemPage {
                                         text: qsTr("Compressed")
                                         subtle: true
                                     }
+
+                                    LingmoUI.Badge {
+                                        visible: modelData.tooHeavy
+                                        text: qsTr("Slow on this computer")
+                                        tone: LingmoUI.Theme.orangeColor
+                                    }
                                 }
 
                                 Label {
@@ -1310,7 +1438,8 @@ ItemPage {
                                 }
 
                                 Label {
-                                    text: page.joinParts([qsTr("Speed: %1").arg(modelData.speedText),
+                                    text: page.joinParts([modelData.estimate !== "" ? qsTr("Here: %1").arg(modelData.estimate)
+                                                                                    : qsTr("Speed: %1").arg(modelData.speedText),
                                                           qsTr("Portuguese: %1").arg(modelData.qualityText)])
                                     color: LingmoUI.Theme.secondaryTextColor
                                     wrapMode: Text.WordWrap

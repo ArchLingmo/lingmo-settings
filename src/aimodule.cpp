@@ -17,6 +17,7 @@
 
 #include "aimodule.h"
 #include "aiheuristics.h"
+#include "whisperhw.h"
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -443,7 +444,6 @@ void AIModule::refresh()
         emit assistantChanged();
     }
     detectWhisperEngines();
-    detectHardware();
     checkVersion();
 }
 
@@ -1010,20 +1010,6 @@ AIModule::LlmfitResult AIModule::parseLlmfit(const QByteArray &json)
         summary << tr("no dedicated GPU");
     result.systemSummary = summary.join(QStringLiteral(" · "));
 
-    result.hardware.ramGb = ram;
-    result.hardware.cores = system.value(QStringLiteral("cpu_cores")).toInt();
-    if (system.value(QStringLiteral("has_gpu")).toBool() && !system.value(QStringLiteral("unified_memory")).toBool()) {
-        const QString backend = system.value(QStringLiteral("backend")).toString().toLower();
-        const QString name = gpu.toLower();
-        if (backend == QLatin1String("cuda") || name.contains(QLatin1String("nvidia")))
-            result.hardware.gpuVendor = QStringLiteral("nvidia");
-        else if (backend == QLatin1String("rocm") || name.contains(QLatin1String("amd")) || name.contains(QLatin1String("radeon")))
-            result.hardware.gpuVendor = QStringLiteral("amd");
-        else if (name.contains(QLatin1String("intel")))
-            result.hardware.gpuVendor = QStringLiteral("intel");
-        result.hardware.vramGb = vram;
-    }
-
     QSet<QString> seen;
     const QJsonArray models = root.value(QStringLiteral("models")).toArray();
     for (const QJsonValue &value : models) {
@@ -1066,11 +1052,6 @@ void AIModule::llmfitFinished(const QString &kind, const LlmfitResult &result)
     } else {
         if (!result.systemSummary.isEmpty())
             m_systemSummary = result.systemSummary;
-        if (result.hardware.ramGb > 0 && result.hardware.cores > 0) {
-            m_hardware = result.hardware;
-            m_hardwareFromLlmfit = true;
-            emit whisperChanged();
-        }
         if (kind == QLatin1String("fit")) {
             m_fitByName.clear();
             for (const FitInfo &fit : result.models)
@@ -1247,111 +1228,130 @@ void AIModule::detectWhisperEngines()
     emit whisperChanged();
 }
 
-// Our own probe, until (or unless) llmfit tells us about the hardware
+// whisperhw.h, again each time the page opens: a GPU backend (ggml-cuda...) may
+// have been installed since. In the background: nvidia-smi takes a moment.
 void AIModule::detectHardware()
 {
-    if (m_hardwareFromLlmfit || m_hardwareProbing || m_hardware.ramGb > 0)
+    if (m_hardwareProbing)
         return;
     m_hardwareProbing = true;
-    auto *watcher = new QFutureWatcher<Hardware>(this);
-    connect(watcher, &QFutureWatcher<Hardware>::finished, this, [this, watcher] {
+    emit whisperHardwareChanged();
+    auto *watcher = new QFutureWatcher<WhisperHw::Hardware>(this);
+    connect(watcher, &QFutureWatcher<WhisperHw::Hardware>::finished, this, [this, watcher] {
         watcher->deleteLater();
         m_hardwareProbing = false;
-        if (m_hardwareFromLlmfit)
-            return;
-        m_hardware = watcher->result();
+        m_whisperHw = watcher->result();
+        m_hardwareProbed = true;
+        emit whisperHardwareChanged();
         emit whisperChanged();
     });
-    watcher->setFuture(QtConcurrent::run(&AIModule::probeHardware));
-}
-
-AIModule::Hardware AIModule::probeHardware()
-{
-    Hardware hw;
-    hw.cores = QThread::idealThreadCount();
-
-    QFile meminfo(QStringLiteral("/proc/meminfo"));
-    if (meminfo.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        static const QRegularExpression re(QStringLiteral("^MemTotal:\\s+(\\d+)\\s+kB"), QRegularExpression::MultilineOption);
-        const QRegularExpressionMatch m = re.match(QString::fromLatin1(meminfo.readAll()));
-        if (m.hasMatch())
-            hw.ramGb = m.captured(1).toDouble() / (1024.0 * 1024.0);
-    }
-
-    // NVIDIA: nvidia-smi reports MiB per GPU
-    const QString nvidiaSmi = findProgram(QStringLiteral("nvidia-smi"));
-    if (!nvidiaSmi.isEmpty()) {
-        QProcess process;
-        process.start(nvidiaSmi, {QStringLiteral("--query-gpu=memory.total"), QStringLiteral("--format=csv,noheader,nounits")});
-        if (process.waitForFinished(5000) && process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0) {
-            const QStringList lines = QString::fromUtf8(process.readAllStandardOutput()).split(QLatin1Char('\n'), Qt::SkipEmptyParts);
-            for (const QString &line : lines) {
-                bool ok = false;
-                const double gb = line.trimmed().toDouble(&ok) / 1024.0;
-                if (ok && gb > hw.vramGb) {
-                    hw.vramGb = gb;
-                    hw.gpuVendor = QStringLiteral("nvidia");
-                }
-            }
-        } else {
-            process.kill();
-            process.waitForFinished(1000);
-        }
-    }
-    if (!hw.gpuVendor.isEmpty())
-        return hw;
-
-    // AMD (amdgpu exposes the VRAM size) and Intel
-    const QDir drm(QStringLiteral("/sys/class/drm"));
-    const QStringList cards = drm.entryList({QStringLiteral("card*")}, QDir::Dirs | QDir::System | QDir::NoDotAndDotDot);
-    for (const QString &card : cards) {
-        if (card.contains(QLatin1Char('-'))) // connectors: card0-HDMI-A-1
-            continue;
-        QFile vendorFile(drm.absoluteFilePath(card + QStringLiteral("/device/vendor")));
-        if (!vendorFile.open(QIODevice::ReadOnly))
-            continue;
-        const QString vendor = QString::fromLatin1(vendorFile.readAll()).trimmed();
-        if (vendor == QLatin1String("0x1002")) {
-            QFile vram(drm.absoluteFilePath(card + QStringLiteral("/device/mem_info_vram_total")));
-            if (vram.open(QIODevice::ReadOnly)) {
-                const double gb = QString::fromLatin1(vram.readAll()).trimmed().toDouble() / (1024.0 * 1024.0 * 1024.0);
-                if (gb > hw.vramGb) {
-                    hw.vramGb = gb;
-                    hw.gpuVendor = QStringLiteral("amd");
-                }
-            }
-        } else if (vendor == QLatin1String("0x8086") && hw.gpuVendor.isEmpty()) {
-            hw.gpuVendor = QStringLiteral("intel");
-        }
-    }
-    return hw;
+    watcher->setFuture(QtConcurrent::run([] { return WhisperHw::probe(); }));
 }
 
 QString AIModule::whisperRecommended() const
 {
-    if (m_hardware.ramGb <= 0)
-        return {};
-    // whisper.cpp only runs on the GPU when ggml has a backend for it (ggml-cuda,
-    // ggml-vulkan, ggml-hip or ggml-sycl); otherwise recommend for the CPU
-    const bool gpu = !m_hardware.gpuVendor.isEmpty() && whisperGpuBackend(m_hardware.gpuVendor);
-    return AIHeuristics::recommendWhisperModel(m_hardware.ramGb, m_hardware.cores, gpu ? m_hardware.vramGb : 0,
-                                               gpu ? m_hardware.gpuVendor : QString());
+    return m_hardwareProbed ? WhisperHw::recommend(m_whisperHw).model : QString();
 }
 
-bool AIModule::whisperGpuBackend(const QString &vendor)
+QVariantMap AIModule::whisperRecommendation() const
 {
-    QStringList libs = {QStringLiteral("libggml-vulkan.so")};
-    if (vendor == QLatin1String("nvidia"))
-        libs << QStringLiteral("libggml-cuda.so");
-    else if (vendor == QLatin1String("amd"))
-        libs << QStringLiteral("libggml-hip.so");
-    else if (vendor == QLatin1String("intel"))
-        libs << QStringLiteral("libggml-sycl.so");
-    for (const QString &dir : {QStringLiteral("/usr/lib"), QStringLiteral("/usr/lib/ggml"), QStringLiteral("/usr/local/lib")})
-        for (const QString &lib : std::as_const(libs))
-            if (QFileInfo::exists(dir + QLatin1Char('/') + lib))
-                return true;
-    return false;
+    if (!m_hardwareProbed)
+        return {};
+    const WhisperHw::Recommendation r = WhisperHw::recommend(m_whisperHw);
+    const bool installed = QFileInfo::exists(QDir(whisperModelsDir()).absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(r.model)));
+    const WhisperHw::Model *model = WhisperHw::findModel(r.model);
+    return {
+        {QStringLiteral("model"), r.model},
+        {QStringLiteral("gpu"), r.gpu},
+        {QStringLiteral("device"), r.device},
+        {QStringLiteral("reason"), r.reason},
+        {QStringLiteral("speed"), WhisperHw::speedText(WhisperHw::estimatedSpeed(r.model, m_whisperHw, r.gpu))},
+        {QStringLiteral("installed"), installed},
+        {QStringLiteral("download"), model ? QLocale().formattedDataSize(model->bytes, 1, QLocale::DataSizeSIFormat) : QString()},
+        {QStringLiteral("upgradePackage"), r.upgradePackage},
+        {QStringLiteral("upgradeModel"), r.upgradeModel},
+        {QStringLiteral("upgradeHint"), r.upgradeHint},
+    };
+}
+
+bool AIModule::whisperModelTooHeavy() const
+{
+    return m_hardwareProbed && !m_subtitleModel.isEmpty() && WhisperHw::tooHeavy(m_subtitleModel, m_whisperHw);
+}
+
+QString AIModule::whisperModelSummary() const
+{
+    if (!m_hardwareProbed || m_subtitleModel.isEmpty())
+        return {};
+    return WhisperHw::runSummary(m_subtitleModel, m_whisperHw);
+}
+
+void AIModule::useRecommendedWhisper()
+{
+    const QString name = whisperRecommended();
+    if (name.isEmpty())
+        return;
+    useOrDownloadWhisper(name);
+}
+
+void AIModule::useOrDownloadWhisper(const QString &name)
+{
+    clearMessages();
+    if (QFileInfo::exists(QDir(whisperModelsDir()).absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(name)))) {
+        useWhisperModel(name);
+        setInfo(tr("Subtitles now use %1.").arg(name));
+        return;
+    }
+    downloadWhisperModel(name);
+    m_useAfterDownload = whisperDownloading() ? name : QString();
+}
+
+void AIModule::installWhisperGpuSupport()
+{
+    const QString package = WhisperHw::recommend(m_whisperHw).upgradePackage;
+    if (package.isEmpty() || m_gpuInstall)
+        return;
+    const WhisperHw::Command command = WhisperHw::installCommand(package);
+    m_gpuInstallFailed = false;
+    m_gpuInstallMessage = tr("Installing %1…").arg(package);
+    m_gpuInstallLog.clear();
+    m_gpuInstall = new QProcess(this);
+    m_gpuInstall->setProcessChannelMode(QProcess::MergedChannels);
+    connect(m_gpuInstall, &QProcess::readyRead, this, [this] {
+        if (m_gpuInstall)
+            m_gpuInstallLog += QString::fromUtf8(m_gpuInstall->readAll());
+    });
+    connect(m_gpuInstall, &QProcess::finished, this, [this, package](int code, QProcess::ExitStatus status) {
+        if (m_gpuInstall) {
+            m_gpuInstallLog += QString::fromUtf8(m_gpuInstall->readAll());
+            m_gpuInstall->deleteLater();
+            m_gpuInstall = nullptr;
+        }
+        if (status == QProcess::NormalExit && code == 0) {
+            m_gpuInstallMessage = tr("%1 is installed. Transcription can use the graphics card now.").arg(package);
+        } else {
+            m_gpuInstallFailed = true;
+            if (code == 126 || code == 127) // pkexec: dismissed or not authorised
+                m_gpuInstallMessage = tr("The installation of %1 was cancelled.").arg(package);
+            else if (m_gpuInstallLog.contains(QLatin1String("@@ERROR lock")))
+                m_gpuInstallMessage = tr("Another program is installing software. Try again when it finishes.");
+            else
+                m_gpuInstallMessage = tr("Could not install %1. Install it from Lingmo Store or with “sudo pacman -S %1”.").arg(package);
+        }
+        emit gpuInstallChanged();
+        detectHardware(); // the backend should be there now
+    });
+    connect(m_gpuInstall, &QProcess::errorOccurred, this, [this, package](QProcess::ProcessError error) {
+        if (error != QProcess::FailedToStart || !m_gpuInstall)
+            return;
+        m_gpuInstall->deleteLater();
+        m_gpuInstall = nullptr;
+        m_gpuInstallFailed = true;
+        m_gpuInstallMessage = tr("Could not install %1. Install it from Lingmo Store or with “sudo pacman -S %1”.").arg(package);
+        emit gpuInstallChanged();
+    });
+    m_gpuInstall->start(command.program, command.arguments);
+    emit gpuInstallChanged();
 }
 
 QVariantList AIModule::whisperModels() const
@@ -1366,7 +1366,7 @@ QVariantList AIModule::whisperModels() const
                                       tr("Very good", "transcription quality"), tr("Excellent", "transcription quality")};
 
     QVariantList list;
-    for (const AIHeuristics::WhisperModel &model : AIHeuristics::whisperCatalogue()) {
+    for (const WhisperHw::Model &model : WhisperHw::catalogue()) {
         const bool installed = QFileInfo::exists(dir.absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(model.name)));
         list.append(QVariantMap{
             {QStringLiteral("name"), model.name},
@@ -1378,6 +1378,8 @@ QVariantList AIModule::whisperModels() const
             {QStringLiteral("qualityText"), qualityTexts.value(model.quality - 1)},
             {QStringLiteral("quantized"), model.quantized},
             {QStringLiteral("recommended"), model.name == recommended},
+            {QStringLiteral("tooHeavy"), m_hardwareProbed && WhisperHw::tooHeavy(model.name, m_whisperHw)},
+            {QStringLiteral("estimate"), m_hardwareProbed ? WhisperHw::speedText(WhisperHw::estimatedSpeed(model.name, m_whisperHw)) : QString()},
             {QStringLiteral("installed"), installed},
             {QStringLiteral("inUse"), installed && model.name == m_subtitleModel},
             {QStringLiteral("tags"), modelTagList(QStringLiteral("whisper-") + model.name, {}, false, false, false)},
@@ -1388,7 +1390,7 @@ QVariantList AIModule::whisperModels() const
 
 void AIModule::useWhisperModel(const QString &name)
 {
-    if (!AIHeuristics::findWhisperModel(name) || name == m_subtitleModel)
+    if (!WhisperHw::findModel(name) || name == m_subtitleModel)
         return;
     if (!QFileInfo::exists(QDir(whisperModelsDir()).absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(name))))
         return;
@@ -1400,7 +1402,7 @@ void AIModule::useWhisperModel(const QString &name)
 
 void AIModule::removeWhisperModel(const QString &name)
 {
-    if (!AIHeuristics::findWhisperModel(name) || name == m_whisperDownloadModel)
+    if (!WhisperHw::findModel(name) || name == m_whisperDownloadModel)
         return;
     clearMessages();
     const QString path = QDir(whisperModelsDir()).absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(name));
@@ -1419,7 +1421,7 @@ void AIModule::removeWhisperModel(const QString &name)
 
 void AIModule::downloadWhisperModel(const QString &name)
 {
-    const AIHeuristics::WhisperModel *model = AIHeuristics::findWhisperModel(name);
+    const WhisperHw::Model *model = WhisperHw::findModel(name);
     if (!model || whisperDownloading())
         return;
     clearMessages();
@@ -1490,7 +1492,7 @@ void AIModule::readWhisperData()
 
 void AIModule::updateWhisperDetail(qint64 received, qint64 total)
 {
-    const AIHeuristics::WhisperModel *model = AIHeuristics::findWhisperModel(m_whisperDownloadModel);
+    const WhisperHw::Model *model = WhisperHw::findModel(m_whisperDownloadModel);
     if (total <= 0 && model)
         total = model->bytes;
     const QLocale locale;
@@ -1527,7 +1529,7 @@ void AIModule::finishWhisperDownload()
     m_whisperReply = nullptr;
 
     const QString name = m_whisperDownloadModel;
-    const AIHeuristics::WhisperModel *model = AIHeuristics::findWhisperModel(name);
+    const WhisperHw::Model *model = WhisperHw::findModel(name);
     const QString partPath = m_whisperFile->fileName();
     const QString finalPath = QDir(whisperModelsDir()).absoluteFilePath(QStringLiteral("ggml-%1.bin").arg(name));
     m_whisperFile->close();
@@ -1567,8 +1569,12 @@ void AIModule::finishWhisperDownload()
     m_whisperProgress = -1;
     m_whisperDetail.clear();
     emit whisperDownloadChanged();
-    if (ok && m_subtitleModel.isEmpty())
+    if (ok && (m_subtitleModel.isEmpty() || m_useAfterDownload == name)) {
         useWhisperModel(name);
+        if (m_useAfterDownload == name)
+            setInfo(tr("%1 is ready and subtitles now use it.").arg(name));
+    }
+    m_useAfterDownload.clear();
     emit whisperChanged();
 }
 

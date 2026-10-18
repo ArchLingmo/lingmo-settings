@@ -192,6 +192,30 @@
         <translation>Legenda</translation>
     </message>
     <message>
+        <source>Subtitles now use %1.</source>
+        <translation>As legendas agora usam o %1.</translation>
+    </message>
+    <message>
+        <source>Installing %1…</source>
+        <translation>Instalando %1…</translation>
+    </message>
+    <message>
+        <source>%1 is installed. Transcription can use the graphics card now.</source>
+        <translation>%1 instalado. A transcrição já pode usar a placa de vídeo.</translation>
+    </message>
+    <message>
+        <source>The installation of %1 was cancelled.</source>
+        <translation>A instalação de %1 foi cancelada.</translation>
+    </message>
+    <message>
+        <source>Another program is installing software. Try again when it finishes.</source>
+        <translation>Outro programa está instalando software. Tente de novo quando ele terminar.</translation>
+    </message>
+    <message>
+        <source>Could not install %1. Install it from Lingmo Store or with “sudo pacman -S %1”.</source>
+        <translation>Não foi possível instalar %1. Instale pela Lingmo Store ou com “sudo pacman -S %1”.</translation>
+    </message>
+    <message>
         <source>Very slow</source>
         <comment>transcription speed</comment>
         <translation>Muito lenta</translation>
@@ -271,6 +295,10 @@
     <message>
         <source>Could not save %1.</source>
         <translation>Não foi possível salvar %1.</translation>
+    </message>
+    <message>
+        <source>%1 is ready and subtitles now use it.</source>
+        <translation>%1 está pronto e as legendas agora o usam.</translation>
     </message>
     <message>
         <source>%1 GB</source>
@@ -2481,6 +2509,10 @@
         <translation>Use letras minúsculas, números, pontos e traços, como llama3.2:3b.</translation>
     </message>
     <message>
+        <source>Here: %1</source>
+        <translation>Neste computador: %1</translation>
+    </message>
+    <message>
         <source>Where it is used</source>
         <translation>Onde é usado</translation>
     </message>
@@ -2709,6 +2741,46 @@
         <translation>Instale o whisper.cpp no terminal com “sudo pacman -S whisper-cpp” e volte a esta página. O faster-whisper é opcional: “pipx install whisper-ctranslate2” ou o pacote whisper-ctranslate2 do AUR.</translation>
     </message>
     <message>
+        <source>Recommended for this computer: %1 · %2</source>
+        <translation>Recomendado para este computador: %1 · %2</translation>
+    </message>
+    <message>
+        <source>Checking this computer…</source>
+        <translation>Verificando este computador…</translation>
+    </message>
+    <message>
+        <source>Use it</source>
+        <translation>Usar</translation>
+    </message>
+    <message>
+        <source>Download and use (%1)</source>
+        <translation>Baixar e usar (%1)</translation>
+    </message>
+    <message>
+        <source>whisper.cpp only uses the graphics card through a ggml backend. With %1 it would use %2.</source>
+        <translation>O whisper.cpp só usa a placa de vídeo por meio de um backend do ggml. Com %1, ele usaria o %2.</translation>
+    </message>
+    <message>
+        <source>Installing…</source>
+        <translation>Instalando…</translation>
+    </message>
+    <message>
+        <source>Install GPU support</source>
+        <translation>Instalar suporte à GPU</translation>
+    </message>
+    <message>
+        <source>%1 is heavy for this computer</source>
+        <translation>%1 é pesado para este computador</translation>
+    </message>
+    <message>
+        <source>Subtitles would run as %1. %2 is faster here and good for Portuguese.</source>
+        <translation>As legendas rodariam assim: %1. O %2 é mais rápido aqui e bom em português.</translation>
+    </message>
+    <message>
+        <source>Use the recommended</source>
+        <translation>Usar o recomendado</translation>
+    </message>
+    <message>
         <source>Engine</source>
         <translation>Mecanismo</translation>
     </message>
@@ -2767,6 +2839,10 @@
     <message>
         <source>Compressed</source>
         <translation>Compactado</translation>
+    </message>
+    <message>
+        <source>Slow on this computer</source>
+        <translation>Lento neste computador</translation>
     </message>
     <message>
         <source>≈ %1 of memory</source>
@@ -3431,6 +3507,52 @@
     <message>
         <source>Delete this user</source>
         <translation>Excluir este usuário</translation>
+    </message>
+</context>
+<context>
+    <name>WhisperHw</name>
+    <message>
+        <source>Runs on the graphics card with %1 (%2 GB of video memory).</source>
+        <translation>Roda na placa de vídeo com %1 (%2 GB de memória de vídeo).</translation>
+    </message>
+    <message>
+        <source>Runs on the graphics card with %1.</source>
+        <translation>Roda na placa de vídeo com %1.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n processor core(s)</source>
+        <translation>
+            <numerusform>%n núcleo do processador</numerusform>
+            <numerusform>%n núcleos do processador</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Install %1 to use your %2 (up to ~%3× faster)</source>
+        <translation>Instale %1 para usar sua %2 (até ~%3× mais rápido)</translation>
+    </message>
+    <message>
+        <source>Install %1 to use your %2</source>
+        <translation>Instale %1 para usar sua %2</translation>
+    </message>
+    <message>
+        <source>Your %1 can&apos;t run whisper yet: ggml has no backend for it, so this model is for the processor (%2).</source>
+        <translation>Sua %1 ainda não roda o whisper: falta o backend do ggml para ela, então este modelo é para o processador (%2).</translation>
+    </message>
+    <message>
+        <source>The graphics card has too little video memory, so this model is for the processor (%1).</source>
+        <translation>A placa de vídeo tem pouca memória, então este modelo é para o processador (%1).</translation>
+    </message>
+    <message>
+        <source>The fastest model that still keeps up with the speech on the processor (%1).</source>
+        <translation>O melhor modelo que ainda acompanha a fala no processador (%1).</translation>
+    </message>
+    <message>
+        <source>~%1× real time</source>
+        <translation>~%1× o tempo real</translation>
+    </message>
+    <message>
+        <source>~%1 min per minute of audio</source>
+        <translation>~%1 min por minuto de áudio</translation>
     </message>
 </context>
 <context>

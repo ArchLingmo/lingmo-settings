@@ -17,12 +17,12 @@
 
 #pragma once
 
-#include <QList>
 #include <QString>
 #include <QStringList>
 
 // Pure helpers of the AI page, kept apart from AIModule so the unit tests
-// (tests/tst_aiheuristics.cpp) link only Qt Core.
+// (tests/tst_aiheuristics.cpp) link only Qt Core. Whisper models and the
+// hardware they suit: whisperhw.h.
 namespace AIHeuristics {
 
 // Tag ids, in display order. The page shows them as badges (AIModule::tagText).
@@ -43,23 +43,5 @@ double parameterBillions(const QString &name, const QString &parameterSize);
 // the rest is a heuristic on the family (name) and size.
 QStringList modelTags(const QString &name, const QString &parameterSize,
                       bool embedding, bool tools, bool thinking);
-
-// A whisper.cpp ggml model on https://huggingface.co/ggerganov/whisper.cpp
-struct WhisperModel {
-    QString name;      // file is ggml-<name>.bin
-    qint64 bytes;      // exact file size
-    QString sha256;    // of the whole file
-    int memoryMb;      // approximate RAM (or VRAM) while transcribing
-    int speed;         // 1 (very slow) .. 5 (very fast), relative to each other
-    int quality;       // Portuguese: 1 basic, 2 good, 3 very good, 4 excellent
-    bool quantized;
-};
-
-// Multilingual models only (the *.en ones can't transcribe Portuguese), small to large
-const QList<WhisperModel> &whisperCatalogue();
-const WhisperModel *findWhisperModel(const QString &name);
-
-// The whisper model that suits a computer. gpuVendor: "nvidia", "amd", "intel" or "".
-QString recommendWhisperModel(double ramGb, int cores, double vramGb, const QString &gpuVendor);
 
 } // namespace AIHeuristics

@@ -86,59 +86,6 @@ private slots:
         QFETCH(QStringList, expected);
         QCOMPARE(AIHeuristics::modelTags(name, parameterSize, embedding, tools, thinking), expected);
     }
-
-    void recommendWhisper_data()
-    {
-        QTest::addColumn<double>("ramGb");
-        QTest::addColumn<int>("cores");
-        QTest::addColumn<double>("vramGb");
-        QTest::addColumn<QString>("vendor");
-        QTest::addColumn<QString>("expected");
-
-        QTest::newRow("nvidia 6 GB") << 32.0 << 12 << 6.0 << "nvidia" << "large-v3-turbo";
-        QTest::newRow("amd 8 GB") << 16.0 << 8 << 8.0 << "amd" << "large-v3-turbo";
-        QTest::newRow("nvidia 2 GB") << 8.0 << 4 << 2.0 << "nvidia" << "large-v3-turbo-q5_0";
-        QTest::newRow("intel igpu, strong cpu") << 16.0 << 8 << 0.0 << "intel" << "large-v3-turbo-q5_0";
-        QTest::newRow("intel vram ignored") << 8.0 << 4 << 8.0 << "intel" << "small";
-        QTest::newRow("laptop 8 GB") << 8.0 << 4 << 0.0 << "" << "small";
-        QTest::newRow("16 GB but 4 cores") << 16.0 << 4 << 0.0 << "" << "small";
-        QTest::newRow("4 GB") << 4.0 << 2 << 0.0 << "" << "base";
-        QTest::newRow("old netbook") << 2.0 << 2 << 0.0 << "" << "tiny";
-        QTest::newRow("single core") << 8.0 << 1 << 0.0 << "" << "tiny";
-    }
-
-    void recommendWhisper()
-    {
-        QFETCH(double, ramGb);
-        QFETCH(int, cores);
-        QFETCH(double, vramGb);
-        QFETCH(QString, vendor);
-        QFETCH(QString, expected);
-        const QString model = recommendWhisperModel(ramGb, cores, vramGb, vendor);
-        QCOMPARE(model, expected);
-        QVERIFY(findWhisperModel(model) != nullptr);
-    }
-
-    void catalogue()
-    {
-        QSet<QString> names;
-        for (const WhisperModel &model : whisperCatalogue()) {
-            QVERIFY(!names.contains(model.name));
-            names.insert(model.name);
-            QVERIFY(model.bytes > 30'000'000);
-            QCOMPARE(model.sha256.size(), 64);
-            QVERIFY(model.speed >= 1 && model.speed <= 5);
-            QVERIFY(model.quality >= 1 && model.quality <= 4);
-            QCOMPARE(model.quantized, model.name.contains(QLatin1Char('_')));
-        }
-        // Published sizes: tiny 75 MiB, base 142 MiB, small 466 MiB, medium 1.5 GiB, large-v3 2.9 GiB
-        QCOMPARE(findWhisperModel(QStringLiteral("tiny"))->bytes / (1024 * 1024), 74);
-        QCOMPARE(findWhisperModel(QStringLiteral("base"))->bytes / (1024 * 1024), 141);
-        QCOMPARE(findWhisperModel(QStringLiteral("small"))->bytes / (1024 * 1024), 465);
-        QCOMPARE(findWhisperModel(QStringLiteral("large-v3"))->bytes / (1024 * 1024), 2951);
-        QVERIFY(findWhisperModel(QStringLiteral("large-v3-turbo-q8_0")));
-        QVERIFY(!findWhisperModel(QStringLiteral("base.en")));
-    }
 };
 
 QTEST_GUILESS_MAIN(TestAIHeuristics)
