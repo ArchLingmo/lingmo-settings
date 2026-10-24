@@ -51,6 +51,10 @@ class Appearance : public QObject
     Q_PROPERTY(bool wobblyWindows READ wobblyWindows WRITE setWobblyWindows NOTIFY wobblyWindowsChanged)
     // KWin only runs it with GPU acceleration (not on software rendering, e.g. VMs without 3D)
     Q_PROPERTY(bool wobblyWindowsSupported READ wobblyWindowsSupported CONSTANT)
+    // "Vidro Lingmo": 0 off (solid surfaces), 1 weak, 2 balanced, 3 strong
+    Q_PROPERTY(int glassLevel READ glassLevel WRITE setGlassLevel NOTIFY glassLevelChanged)
+    // Fewer animations: no springs, no light sheen
+    Q_PROPERTY(bool reduceMotion READ reduceMotion WRITE setReduceMotion NOTIFY reduceMotionChanged)
 
 public:
     explicit Appearance(QObject *parent = nullptr);
@@ -113,6 +117,12 @@ public:
     void setWobblyWindows(bool enabled);
     bool wobblyWindowsSupported() const;
 
+    int glassLevel() const { return m_glassLevel; }
+    Q_INVOKABLE void setGlassLevel(int level);
+
+    bool reduceMotion() const { return m_reduceMotion; }
+    Q_INVOKABLE void setReduceMotion(bool reduce);
+
 signals:
     void dockIconSizeChanged();
     void dockDirectionChanged();
@@ -130,6 +140,12 @@ signals:
     void systemEffectsChanged();
     void minimiumAnimationChanged();
     void wobblyWindowsChanged();
+    void glassLevelChanged();
+    void reduceMotionChanged();
+
+private slots:
+    void onGlassLevelChanged(int level);
+    void onReduceMotionChanged(bool reduce);
 
 private:
     QDBusInterface m_interface;
@@ -152,6 +168,8 @@ private:
     bool m_systemEffects;
     int m_minimiumAnimation;
     bool m_wobblyWindows = false;
+    int m_glassLevel = 2;
+    bool m_reduceMotion = false;
 };
 
 #endif // APPEARANCE_H

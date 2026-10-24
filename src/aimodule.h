@@ -20,6 +20,8 @@
 #include <QElapsedTimer>
 #include <QHash>
 #include <QObject>
+#include <QTemporaryDir>
+#include <memory>
 #include <QPointer>
 #include <QStringList>
 #include <QUrl>
@@ -60,6 +62,11 @@ class AIModule : public QObject
     Q_PROPERTY(bool assistantWrite READ assistantWrite WRITE setAssistantWrite NOTIFY assistantChanged)
     Q_PROPERTY(QStringList assistantTools READ assistantTools NOTIFY assistantChanged)
     Q_PROPERTY(QStringList assistantFolders READ assistantFolders NOTIFY assistantChanged)
+    // Voice of the assistant (assistant_voice_replies, assistant_tts_voice, assistant_tts_rate)
+    Q_PROPERTY(bool assistantVoiceReplies READ assistantVoiceReplies WRITE setAssistantVoiceReplies NOTIFY assistantVoiceChanged)
+    Q_PROPERTY(QString assistantVoice READ assistantVoice WRITE setAssistantVoice NOTIFY assistantVoiceChanged)
+    Q_PROPERTY(qreal assistantVoiceRate READ assistantVoiceRate WRITE setAssistantVoiceRate NOTIFY assistantVoiceChanged)
+    Q_PROPERTY(QVariantList assistantVoices READ assistantVoices NOTIFY assistantVoiceChanged)
     // Areas no tool may read or write, for display ("~/.ssh", "*.kdbx"...)
     Q_PROPERTY(QStringList assistantBlockedAreas READ assistantBlockedAreas CONSTANT)
 
@@ -216,6 +223,16 @@ public:
     Q_INVOKABLE void refreshWhisperHardware() { detectHardware(); }
 
     Q_INVOKABLE void openAssistant();
+    // lingmo-assistant --section flows|agents|settings
+    Q_INVOKABLE void openAssistantSection(const QString &section);
+    Q_INVOKABLE void testAssistantVoice(const QString &text);
+    bool assistantVoiceReplies() const;
+    void setAssistantVoiceReplies(bool on);
+    QString assistantVoice() const;
+    void setAssistantVoice(const QString &voice);
+    qreal assistantVoiceRate() const;
+    void setAssistantVoiceRate(qreal rate);
+    QVariantList assistantVoices() const;
     Q_INVOKABLE void setAssistantTool(const QString &id, bool enabled);
     // Returns an error to show, or an empty string when the folder was added
     Q_INVOKABLE QString addAssistantFolder(const QUrl &folder);
@@ -234,6 +251,7 @@ signals:
     void busyChanged();
     void messageChanged();
     void assistantChanged();
+    void assistantVoiceChanged();
     void whisperChanged();
     void subtitleConfigChanged();
     void whisperDownloadChanged();
@@ -326,6 +344,7 @@ private:
     bool m_assistantWrite = false;
     QStringList m_assistantTools;
     QStringList m_assistantFolders;
+    std::unique_ptr<QTemporaryDir> m_voiceDir;   // the "Test" voice sample
 
     int m_ollamaState = Checking;
     QString m_ollamaVersion;

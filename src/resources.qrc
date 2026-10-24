@@ -4,6 +4,8 @@
         <file>qml/SideBar.qml</file>
         <file>qml/AI/Main.qml</file>
         <file>qml/Boxes/Main.qml</file>
+        <file>qml/Continuity/ContinuityPage.qml</file>
+        <file>qml/Continuity/ContinuityLayout.qml</file>
         <file>qml/ItemPage.qml</file>
         <file>qml/SysItem.qml</file>
         <file>images/dark/display-brightness-low-symbolic.svg</file>
@@ -83,6 +85,7 @@
         <file>images/sidebar/all/info.svg</file>
         <file>images/sidebar/all/ai.svg</file>
         <file>images/sidebar/all/boxes.svg</file>
+        <file>images/sidebar/all/continuity.svg</file>
         <file>images/sidebar/all/accounts.svg</file>
         <file>images/sidebar/all/appearance.svg</file>
         <file>images/sidebar/all/accessibility.svg</file>
@@ -92,6 +95,7 @@
         <file>images/sidebar/all/effects.svg</file>
         <file>images/sidebar/all/battery.svg</file>
         <file>images/sidebar/all/bluetooth.svg</file>
+        <file>images/sidebar/all/phone.svg</file>
         <file>images/sidebar/all/display.svg</file>
         <file>images/sidebar/all/dock.svg</file>
         <file>images/sidebar/all/language.svg</file>
@@ -136,6 +140,8 @@
         <file>qml/WLAN/WirelessDetailsDialog.qml</file>
         <file>images/sidebar/all/wlan.svg</file>
         <file>qml/Bluetooth/Main.qml</file>
+        <file>qml/Phone/Main.qml</file>
+        <file>qml/Phone/SharePage.qml</file>
         <file>qml/Hotspot/Main.qml</file>
         <file>qml/Application/Main.qml</file>
         <file>qml/Cursor/Main.qml</file>

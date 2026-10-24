@@ -72,12 +72,17 @@ ItemPage {
         { id: "notes_read", name: qsTr("Read notes"), text: qsTr("Lists, searches and reads pages in Lingmo Notes.") },
         { id: "calendar_read", name: qsTr("Read calendar"), text: qsTr("Reads events and tasks from the Lingmo Mail calendar.") },
         { id: "web", name: qsTr("Internet (search and pages)"), text: qsTr("Searches the web and reads pages."),
-          warning: qsTr("What it searches for leaves this computer.") }
+          warning: qsTr("What it searches for leaves this computer.") },
+        { id: "mail_read", name: qsTr("Read e-mail"), text: qsTr("Lists and reads messages of your Lingmo Mail accounts, without marking them read.") }
     ]
     readonly property var writeTools: [
         { id: "notes_write", name: qsTr("Write notes"), text: qsTr("Creates pages in Lingmo Notes or adds text to a page.") },
         { id: "calendar_write", name: qsTr("Add to calendar"), text: qsTr("Creates events, reminders and tasks in the Lingmo Mail calendar.") },
-        { id: "files_write", name: qsTr("Write files"), text: qsTr("Creates files or adds text to files in the folders below. Overwriting shows what changes first.") }
+        { id: "files_write", name: qsTr("Write files"), text: qsTr("Creates files or adds text to files in the folders below. Overwriting shows what changes first.") },
+        { id: "mail_write", name: qsTr("Send e-mail"), text: qsTr("Sends and replies as you, moves and flags messages, adds contacts. Never deletes mail."),
+          warning: qsTr("Messages leave this computer: each one asks you first.") },
+        { id: "alarms_write", name: qsTr("Alarms and timers"), text: qsTr("Creates alarms and timers in Lingmo Clock.") },
+        { id: "desktop_actions", name: qsTr("Open apps and sites"), text: qsTr("Opens installed apps and https addresses, takes screenshots into the folders below.") }
     ]
 
     function fitColor(level) {
@@ -544,6 +549,32 @@ ItemPage {
                     }
                 }
 
+                RowLayout {
+                    visible: AIModule.assistantInstalled
+                    spacing: LingmoUI.Units.largeSpacing
+
+                    Label {
+                        text: qsTr("Workflows")
+                        color: LingmoUI.Theme.linkColor
+                        TapHandler { onTapped: AIModule.openAssistantSection("flows") }
+                        HoverHandler { cursorShape: Qt.PointingHandCursor }
+                    }
+
+                    Label {
+                        text: qsTr("Agents")
+                        color: LingmoUI.Theme.linkColor
+                        TapHandler { onTapped: AIModule.openAssistantSection("agents") }
+                        HoverHandler { cursorShape: Qt.PointingHandCursor }
+                    }
+
+                    Label {
+                        text: qsTr("Voice")
+                        color: LingmoUI.Theme.linkColor
+                        TapHandler { onTapped: AIModule.openAssistantSection("settings") }
+                        HoverHandler { cursorShape: Qt.PointingHandCursor }
+                    }
+                }
+
                 Label {
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
@@ -850,6 +881,113 @@ ItemPage {
                     color: LingmoUI.Theme.secondaryTextColor
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
+                }
+            }
+
+            // ---------------------------------------------------------- Assistant voice
+            RoundedItem {
+                id: voiceCard
+                visible: AIModule.assistantInstalled
+
+                Label {
+                    text: qsTr("Assistant voice")
+                    font.pointSize: LingmoUI.Units.fontSubheading
+                    font.weight: Font.DemiBold
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    text: qsTr("Press Meta+Shift+I anywhere to ask by voice. Speech is recognized with the transcription model below and answers are spoken with a local voice: nothing leaves this computer.")
+                }
+
+                RowLayout {
+                    spacing: LingmoUI.Units.largeSpacing * 2
+                    Layout.fillWidth: true
+
+                    ColumnLayout {
+                        spacing: 0
+                        Layout.fillWidth: true
+
+                        Label {
+                            text: qsTr("Answer out loud")
+                        }
+
+                        Label {
+                            text: qsTr("Questions asked by voice are also answered by voice.")
+                            color: LingmoUI.Theme.secondaryTextColor
+                            wrapMode: Text.WordWrap
+                            Layout.fillWidth: true
+                        }
+                    }
+
+                    Switch {
+                        checked: AIModule.assistantVoiceReplies
+                        Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                        rightPadding: 0
+                        onToggled: AIModule.assistantVoiceReplies = checked
+                    }
+                }
+
+                RowLayout {
+                    spacing: LingmoUI.Units.largeSpacing * 2
+                    Layout.fillWidth: true
+
+                    Label {
+                        text: qsTr("Voice")
+                        Layout.fillWidth: true
+                    }
+
+                    ComboBox {
+                        id: assistantVoiceBox
+                        Layout.preferredWidth: 320
+                        readonly property var choices: [{ id: "", name: qsTr("Automatic (best for your language)") }]
+                                                       .concat(AIModule.assistantVoices)
+                        model: choices
+                        textRole: "name"
+                        valueRole: "id"
+                        currentIndex: Math.max(0, choices.findIndex(v => v.id === AIModule.assistantVoice))
+                        onActivated: AIModule.assistantVoice = currentValue
+                    }
+                }
+
+                RowLayout {
+                    spacing: LingmoUI.Units.largeSpacing * 2
+                    Layout.fillWidth: true
+
+                    Label {
+                        text: qsTr("Speed")
+                    }
+
+                    Slider {
+                        id: assistantRateSlider
+                        Layout.fillWidth: true
+                        from: 0.5
+                        to: 2.0
+                        stepSize: 0.05
+                        value: AIModule.assistantVoiceRate
+                        onPressedChanged: if (!pressed) AIModule.assistantVoiceRate = value
+                    }
+
+                    Label {
+                        text: Math.round(assistantRateSlider.value * 100) + "%"
+                        color: LingmoUI.Theme.secondaryTextColor
+                    }
+
+                    Button {
+                        text: qsTr("Test")
+                        flat: true
+                        enabled: AIModule.assistantVoices.length > 0
+                        onClicked: AIModule.testAssistantVoice(qsTr("Hello! This is how the assistant answers out loud."))
+                    }
+                }
+
+                Label {
+                    visible: AIModule.assistantVoices.length === 0
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    color: LingmoUI.Theme.orangeColor
+                    text: qsTr("No voice installed. Install “piper-tts” and a voice for your language (natural) or “espeak-ng” (robotic).")
                 }
             }
 

@@ -82,6 +82,55 @@ Appearance::Appearance(QObject *parent)
 
         connect(&m_interface, SIGNAL(darkModeDimsWallpaerChanged()), this, SIGNAL(dimsWallpaperChanged()));
     }
+
+    // Glass and reduce motion live in the theme settings (lingmo-core); read the
+    // file first so the page is right even before the daemon answers
+    QSettings theme(QStringLiteral("lingmoos"), QStringLiteral("theme"));
+    m_glassLevel = qBound(0, theme.value("GlassLevel", 2).toInt(), 3);
+    m_reduceMotion = theme.value("ReduceMotion", false).toBool();
+    if (m_interface.isValid()) {
+        const QVariant glass = m_interface.property("glassLevel");
+        if (glass.isValid())
+            m_glassLevel = qBound(0, glass.toInt(), 3);
+        const QVariant reduce = m_interface.property("reduceMotion");
+        if (reduce.isValid())
+            m_reduceMotion = reduce.toBool();
+    }
+    QDBusConnection::sessionBus().connect("com.lingmo.Settings", "/Theme", "com.lingmo.Theme",
+                                          "glassLevelChanged", this, SLOT(onGlassLevelChanged(int)));
+    QDBusConnection::sessionBus().connect("com.lingmo.Settings", "/Theme", "com.lingmo.Theme",
+                                          "reduceMotionChanged", this, SLOT(onReduceMotionChanged(bool)));
+}
+
+void Appearance::setGlassLevel(int level)
+{
+    level = qBound(0, level, 3);
+    if (m_interface.isValid())
+        m_interface.call("setGlassLevel", level);
+    onGlassLevelChanged(level);
+}
+
+void Appearance::onGlassLevelChanged(int level)
+{
+    if (m_glassLevel != level) {
+        m_glassLevel = level;
+        emit glassLevelChanged();
+    }
+}
+
+void Appearance::setReduceMotion(bool reduce)
+{
+    if (m_interface.isValid())
+        m_interface.call("setReduceMotion", reduce);
+    onReduceMotionChanged(reduce);
+}
+
+void Appearance::onReduceMotionChanged(bool reduce)
+{
+    if (m_reduceMotion != reduce) {
+        m_reduceMotion = reduce;
+        emit reduceMotionChanged();
+    }
 }
 
 void Appearance::switchDarkMode(bool darkMode)

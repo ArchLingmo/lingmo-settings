@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QHostInfo>
 #include <QOpenGLContext>
+#include <QLocale>
 
 #ifdef Q_OS_LINUX
 #include <sys/sysinfo.h>
@@ -69,7 +70,8 @@ bool About::isLingmoOS()
 }
 
 bool About::checkForLingmoOS() {
-    if (QFile::exists("/etc/lingmo_version"))
+    if (QFile::exists(qEnvironmentVariable("LINGMO_RELEASE_FILE", "/etc/lingmo-release"))
+        || QFile::exists("/etc/lingmo_version"))
         return true;
     else
         return false;
@@ -82,8 +84,26 @@ QString About::hostName()
 
 QString About::version()
 {
+    const auto release = releaseInfo();
+    if (!release.value("name").toString().isEmpty())
+        return (release.value("name").toString() + " " + release.value("version").toString()).trimmed();
     QSettings settings("/etc/os-release",QSettings::IniFormat);
     return settings.value("PRETTY_NAME").toString();
+}
+
+QVariantMap About::releaseInfo()
+{
+    const QString path = qEnvironmentVariable("LINGMO_RELEASE_FILE", "/etc/lingmo-release");
+    QSettings release(QFile::exists(path) ? path : QStringLiteral("/etc/os-release"), QSettings::IniFormat);
+    const bool portuguese = QLocale().language() == QLocale::Portuguese;
+    const QString codename = release.value("VERSION_CODENAME").toString();
+    QString pretty = release.value(portuguese ? "CODENAME_PT" : "CODENAME_EN").toString();
+    if (pretty.isEmpty())
+        pretty = release.value("CODENAME_PRETTY", codename).toString();
+    return {{"name", release.value("NAME").toString()}, {"version", release.value("VERSION").toString()},
+            {"codename", codename}, {"pretty", pretty},
+            {"symbol", release.value("ELEMENT_SYMBOL").toString()}, {"number", release.value("ELEMENT_NUMBER").toString()},
+            {"blog", release.value("BLOG_URL").toString()}};
 }
 
 QString About::systemrelease()

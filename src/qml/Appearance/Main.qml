@@ -127,6 +127,66 @@ ItemPage {
                 }
             }
 
+            // "Vidro Lingmo": one glass material for the bar, panels, menus...
+            RoundedItem {
+                Label {
+                    text: qsTr("Glass")
+                    font.pointSize: LingmoUI.Units.fontSubheading
+                    font.weight: Font.DemiBold
+                }
+
+                LingmoUI.SegmentedControl {
+                    Layout.fillWidth: true
+                    fillWidth: true
+                    // Index 0 is the strongest; glassLevel 3 strong .. 0 off
+                    model: [qsTr("Strong", "glass level"), qsTr("Balanced", "glass level"), qsTr("Weak", "glass level"), qsTr("Off", "glass level")]
+                    currentIndex: 3 - appearance.glassLevel
+                    onActivated: (index) => appearance.setGlassLevel(3 - index)
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    color: LingmoUI.Theme.secondaryTextColor
+                    font.pointSize: LingmoUI.Units.fontCaption
+                    text: appearance.glassLevel === 0
+                          ? qsTr("Solid surfaces: lighter on the graphics card and easier to read.")
+                          : qsTr("Frosted glass on the status bar, control center, notifications, dock, menus and popups. Off uses solid surfaces, for performance and accessibility.")
+                }
+
+                HorizontalDivider {}
+
+                RowLayout {
+                    spacing: LingmoUI.Units.largeSpacing
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 2
+
+                        Label {
+                            text: qsTr("Reduce motion")
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                            color: LingmoUI.Theme.secondaryTextColor
+                            font.pointSize: LingmoUI.Units.fontCaption
+                            text: qsTr("Fewer and shorter animations, no springs and no light sheen on glass.")
+                        }
+                    }
+
+                    Switch {
+                        // Follows the setting, also after a click and when it
+                        // changes elsewhere
+                        Binding on checked { value: appearance.reduceMotion }
+                        Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                        onToggled: appearance.setReduceMotion(checked)
+                        rightPadding: 0
+                    }
+                }
+            }
+
             RoundedItem {
                 Label {
                     text: qsTr("Accent color")

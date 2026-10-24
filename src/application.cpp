@@ -48,6 +48,7 @@
 #include "touchpad.h"
 #include "aimodule.h"
 #include "boxesmodule.h"
+#include "continuitymodule.h"
 // #include "updatorhelper.h"
 // #include "upgradeablemodel.h"
 
@@ -108,6 +109,10 @@ Application::Application(std::shared_ptr<QQmlApplicationEngine> engine)
     // One instance: recreating a Linux box takes a while and survives page changes
     qmlRegisterSingletonType<BoxesModule>(uri, 1, 0, "BoxesModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
         return new BoxesModule();
+    });
+    // Shared keyboard and mouse: talks to lingmo-continuityd over D-Bus
+    qmlRegisterSingletonType<ContinuityModule>(uri, 1, 0, "ContinuityModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
+        return new ContinuityModule();
     });
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)

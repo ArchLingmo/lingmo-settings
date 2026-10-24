@@ -16,6 +16,8 @@
  */
 
 #include "aimodule.h"
+#include <QTemporaryDir>
+#include <QDirIterator>
 #include "aiheuristics.h"
 #include "whisperhw.h"
 
@@ -72,6 +74,8 @@ const QStringList DefaultAssistantTools = {
     QStringLiteral("system_info"), QStringLiteral("shell_read"), QStringLiteral("read_files"),
     QStringLiteral("search_files"), QStringLiteral("notes_read"), QStringLiteral("calendar_read"),
     QStringLiteral("notes_write"), QStringLiteral("calendar_write"), QStringLiteral("files_write"),
+    QStringLiteral("mail_read"), QStringLiteral("mail_write"), QStringLiteral("alarms_write"),
+    QStringLiteral("desktop_actions"),
 };
 
 // Home-relative areas no tool may touch, even inside an allowed folder
@@ -1627,4 +1631,158 @@ void AIModule::changeBusy(int delta)
     m_busy = std::max(0, m_busy + delta);
     if (was != busy())
         emit busyChanged();
+}
+
+// ---------------------------------------------------------------- assistant voice
+
+// docs/assistant-contract.md: voice keys, read by the assistant engine
+const QString KeyAssistantVoiceReplies = QStringLiteral("assistant_voice_replies");
+const QString KeyAssistantTtsVoice = QStringLiteral("assistant_tts_voice");
+const QString KeyAssistantTtsRate = QStringLiteral("assistant_tts_rate");
+
+bool AIModule::assistantVoiceReplies() const
+{
+    return QSettings(ConfigOrganization, ConfigApplication).value(KeyAssistantVoiceReplies, false).toBool();
+}
+
+void AIModule::setAssistantVoiceReplies(bool on)
+{
+    QSettings settings(ConfigOrganization, ConfigApplication);
+    settings.setValue(KeyAssistantVoiceReplies, on);
+    settings.sync();
+    emit assistantVoiceChanged();
+}
+
+QString AIModule::assistantVoice() const
+{
+    return QSettings(ConfigOrganization, ConfigApplication).value(KeyAssistantTtsVoice).toString();
+}
+
+void AIModule::setAssistantVoice(const QString &voice)
+{
+    QSettings settings(ConfigOrganization, ConfigApplication);
+    if (voice.isEmpty())
+        settings.remove(KeyAssistantTtsVoice);
+    else
+        settings.setValue(KeyAssistantTtsVoice, voice);
+    settings.sync();
+    emit assistantVoiceChanged();
+}
+
+qreal AIModule::assistantVoiceRate() const
+{
+    return qBound(0.5, QSettings(ConfigOrganization, ConfigApplication).value(KeyAssistantTtsRate, 1.0).toDouble(), 2.0);
+}
+
+void AIModule::setAssistantVoiceRate(qreal rate)
+{
+    QSettings settings(ConfigOrganization, ConfigApplication);
+    settings.setValue(KeyAssistantTtsRate, qBound(0.5, qRound(rate * 20) / 20.0, 2.0));
+    settings.sync();
+    emit assistantVoiceChanged();
+}
+
+// Same voices as the engine (lingmo_assistant/voice.py): piper models with
+// their .onnx.json, then espeak-ng
+QVariantList AIModule::assistantVoices() const
+{
+    QVariantList out;
+    if (!findProgram(QStringLiteral("piper-tts")).isEmpty() || !findProgram(QStringLiteral("piper")).isEmpty()) {
+        const QStringList dirs = {
+            QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/piper-voices"),
+            QStringLiteral("/usr/share/piper-voices"), QStringLiteral("/usr/local/share/piper-voices"),
+        };
+        QStringList seen;
+        static const QRegularExpression name(QStringLiteral("^([a-z]{2,3}_[A-Z]{2})-([^-]+)-(\\w+)$"));
+        for (const QString &dir : dirs) {
+            QDirIterator it(dir, {QStringLiteral("*.onnx")}, QDir::Files, QDirIterator::Subdirectories);
+            QStringList models;
+            while (it.hasNext())
+                models << it.next();
+            models.sort();
+            for (const QString &model : std::as_const(models)) {
+                const QString stem = QFileInfo(model).completeBaseName();
+                if (seen.contains(stem) || !QFileInfo::exists(model + QStringLiteral(".json")))
+                    continue;
+                seen << stem;
+                const auto m = name.match(stem);
+                const QString speaker = m.hasMatch() ? m.captured(2) : stem;
+                const QString lang = m.hasMatch() ? m.captured(1) : QString();
+                out << QVariantMap{{QStringLiteral("id"), QStringLiteral("piper:") + stem},
+                                   {QStringLiteral("name"), QStringLiteral("%1 (%2)").arg(speaker.left(1).toUpper() + speaker.mid(1), lang)},
+                                   {QStringLiteral("path"), model}};
+            }
+        }
+    }
+    const QString espeak = findProgram(QStringLiteral("espeak-ng"));
+    if (!espeak.isEmpty()) {
+        out << QVariantMap{{QStringLiteral("id"), QStringLiteral("espeak:pt-br")},
+                           {QStringLiteral("name"), tr("eSpeak NG (pt-BR, robotic)")}, {QStringLiteral("path"), QString()}};
+        out << QVariantMap{{QStringLiteral("id"), QStringLiteral("espeak:en-us")},
+                           {QStringLiteral("name"), tr("eSpeak NG (en-US, robotic)")}, {QStringLiteral("path"), QString()}};
+    }
+    return out;
+}
+
+void AIModule::testAssistantVoice(const QString &text)
+{
+    const QVariantList voices = assistantVoices();
+    if (voices.isEmpty())
+        return;
+    // the chosen voice, or the first one for the system language
+    QVariantMap voice = voices.first().toMap();
+    const QString chosen = assistantVoice();
+    const QString lang = QLocale().name();
+    for (const QVariant &v : voices) {
+        const QVariantMap m = v.toMap();
+        if (chosen.isEmpty() ? m.value(QStringLiteral("id")).toString().contains(lang)
+                             : m.value(QStringLiteral("id")).toString() == chosen) {
+            voice = m;
+            break;
+        }
+    }
+    if (!m_voiceDir)
+        m_voiceDir.reset(new QTemporaryDir);
+    const QString wav = m_voiceDir->filePath(QStringLiteral("test.wav"));
+    const qreal rate = assistantVoiceRate();
+    auto *synth = new QProcess(this);
+    const QString id = voice.value(QStringLiteral("id")).toString();
+    if (id.startsWith(QLatin1String("piper:"))) {
+        QString piper = findProgram(QStringLiteral("piper-tts"));
+        if (piper.isEmpty())
+            piper = findProgram(QStringLiteral("piper"));
+        const QString model = voice.value(QStringLiteral("path")).toString();
+        synth->start(piper, {QStringLiteral("-m"), model, QStringLiteral("-c"), model + QStringLiteral(".json"),
+                             QStringLiteral("-f"), wav, QStringLiteral("-q"), QStringLiteral("--length_scale"),
+                             QString::number(1.0 / rate, 'f', 2)});
+    } else {
+        synth->start(findProgram(QStringLiteral("espeak-ng")),
+                     {QStringLiteral("-v"), id.section(QLatin1Char(':'), 1), QStringLiteral("-s"),
+                      QString::number(int(165 * rate)), QStringLiteral("-w"), wav, QStringLiteral("--stdin")});
+    }
+    synth->write(text.toUtf8());
+    synth->closeWriteChannel();
+    connect(synth, &QProcess::finished, this, [this, synth, wav](int code) {
+        synth->deleteLater();
+        if (code != 0 || !QFileInfo::exists(wav))
+            return;
+        for (const QString &player : {QStringLiteral("pw-play"), QStringLiteral("paplay"), QStringLiteral("aplay")}) {
+            const QString path = findProgram(player);
+            if (!path.isEmpty()) {
+                QProcess::startDetached(path, {wav});
+                break;
+            }
+        }
+    });
+}
+
+void AIModule::openAssistantSection(const QString &section)
+{
+    m_assistantBinary = findProgram(AssistantProgram);
+    if (m_assistantBinary.isEmpty()) {
+        emit assistantChanged();
+        return;
+    }
+    if (!QProcess::startDetached(m_assistantBinary, {QStringLiteral("--section"), section}))
+        setError(tr("Could not open the assistant."));
 }

@@ -328,12 +328,24 @@
         <source>Could not open the assistant.</source>
         <translation>Não foi possível abrir o assistente.</translation>
     </message>
+    <message>
+        <source>eSpeak NG (pt-BR, robotic)</source>
+        <translation>eSpeak NG (pt-BR, robótica)</translation>
+    </message>
+    <message>
+        <source>eSpeak NG (en-US, robotic)</source>
+        <translation>eSpeak NG (en-US, robótica)</translation>
+    </message>
 </context>
 <context>
     <name>About</name>
     <message>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
+    </message>
+    <message>
+        <source>What's new in this release</source>
+        <translation>Novidades desta versão</translation>
     </message>
 </context>
 <context>
@@ -3047,6 +3059,126 @@
         <source>Extra large</source>
         <translation>Extra grande</translation>
     </message>
+    <message>
+        <source>Strong</source>
+        <comment>glass level</comment>
+        <translation>Forte</translation>
+    </message>
+    <message>
+        <source>Balanced</source>
+        <comment>glass level</comment>
+        <translation>Equilibrado</translation>
+    </message>
+    <message>
+        <source>Weak</source>
+        <comment>glass level</comment>
+        <translation>Suave</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <comment>glass level</comment>
+        <translation>Desligado</translation>
+    </message>
+    <message>
+        <source>Solid surfaces: lighter on the graphics card and easier to read.</source>
+        <translation>Superfícies sólidas: mais leves para a placa de vídeo e mais fáceis de ler.</translation>
+    </message>
+    <message>
+        <source>Frosted glass on the status bar, control center, notifications, dock, menus and popups. Off uses solid surfaces, for performance and accessibility.</source>
+        <translation>Vidro fosco na barra de status, na central de controle, nas notificações, no dock, nos menus e nos pop-ups. Desligado usa superfícies sólidas, para desempenho e acessibilidade.</translation>
+    </message>
+    <message>
+        <source>Reduce motion</source>
+        <translation>Reduzir movimento</translation>
+    </message>
+    <message>
+        <source>Fewer and shorter animations, no springs and no light sheen on glass.</source>
+        <translation>Menos animações e mais curtas, sem efeito de mola e sem o brilho de luz no vidro.</translation>
+    </message>
+    <message>
+        <source>Read e-mail</source>
+        <translation>Ler e-mails</translation>
+    </message>
+    <message>
+        <source>Lists and reads messages of your Lingmo Mail accounts, without marking them read.</source>
+        <translation>Lista e lê mensagens das suas contas do Lingmo Mail, sem marcá-las como lidas.</translation>
+    </message>
+    <message>
+        <source>Send e-mail</source>
+        <translation>Enviar e-mails</translation>
+    </message>
+    <message>
+        <source>Sends and replies as you, moves and flags messages, adds contacts. Never deletes mail.</source>
+        <translation>Envia e responde como você, move e marca mensagens, adiciona contatos. Nunca apaga e-mails.</translation>
+    </message>
+    <message>
+        <source>Messages leave this computer: each one asks you first.</source>
+        <translation>As mensagens saem do computador: cada uma pergunta antes.</translation>
+    </message>
+    <message>
+        <source>Alarms and timers</source>
+        <translation>Alarmes e timers</translation>
+    </message>
+    <message>
+        <source>Creates alarms and timers in Lingmo Clock.</source>
+        <translation>Cria alarmes e timers no Relógio do Lingmo.</translation>
+    </message>
+    <message>
+        <source>Open apps and sites</source>
+        <translation>Abrir apps e sites</translation>
+    </message>
+    <message>
+        <source>Opens installed apps and https addresses, takes screenshots into the folders below.</source>
+        <translation>Abre apps instalados e endereços https, salva capturas de tela nas pastas abaixo.</translation>
+    </message>
+    <message>
+        <source>Workflows</source>
+        <translation>Fluxos</translation>
+    </message>
+    <message>
+        <source>Agents</source>
+        <translation>Agentes</translation>
+    </message>
+    <message>
+        <source>Voice</source>
+        <translation>Voz</translation>
+    </message>
+    <message>
+        <source>Assistant voice</source>
+        <translation>Voz do assistente</translation>
+    </message>
+    <message>
+        <source>Press Meta+Shift+I anywhere to ask by voice. Speech is recognized with the transcription model below and answers are spoken with a local voice: nothing leaves this computer.</source>
+        <translation>Aperte Meta+Shift+I em qualquer lugar para perguntar por voz. A fala é reconhecida com o modelo de transcrição abaixo e as respostas são faladas com uma voz local: nada sai do computador.</translation>
+    </message>
+    <message>
+        <source>Answer out loud</source>
+        <translation>Responder em voz alta</translation>
+    </message>
+    <message>
+        <source>Questions asked by voice are also answered by voice.</source>
+        <translation>Perguntas feitas por voz também são respondidas por voz.</translation>
+    </message>
+    <message>
+        <source>Automatic (best for your language)</source>
+        <translation>Automática (a melhor para o seu idioma)</translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation>Velocidade</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>Testar</translation>
+    </message>
+    <message>
+        <source>Hello! This is how the assistant answers out loud.</source>
+        <translation>Olá! É assim que o assistente responde em voz alta.</translation>
+    </message>
+    <message>
+        <source>No voice installed. Install “piper-tts” and a voice for your language (natural) or “espeak-ng” (robotic).</source>
+        <translation>Nenhuma voz instalada. Instale o “piper-tts” e uma voz do seu idioma (natural) ou o “espeak-ng” (robótica).</translation>
+    </message>
 </context>
 <context>
     <name>NewNetworkDialog</name>
@@ -3138,6 +3270,22 @@
 </context>
 <context>
     <name>SideBar</name>
+    <message>
+        <source>Phone and devices</source>
+        <translation>Celular e dispositivos</translation>
+    </message>
+    <message>
+        <source>Android, iPhone, iPad, KDE Connect, LocalSend, share, send files, SMS, nearby</source>
+        <translation>Android, iPhone, iPad, KDE Connect, LocalSend, compartilhar, enviar arquivos, SMS, celular, próximo</translation>
+    </message>
+    <message>
+        <source>Shared Keyboard and Mouse</source>
+        <translation>Teclado e mouse compartilhados</translation>
+    </message>
+    <message>
+        <source>Deskflow, Synergy, other computer, multiple computers, KVM, clipboard, screen edge</source>
+        <translation>Deskflow, Synergy, outro computador, vários computadores, KVM, área de transferência, borda da tela, teclado, mouse</translation>
+    </message>
     <message>
         <source>User</source>
         <translation>Usuário</translation>
@@ -3287,8 +3435,8 @@
         <translation>tela, monitor, resolução, brilho, escala, luz noturna, taxa de atualização</translation>
     </message>
     <message>
-        <source>theme, dark mode, light mode, accent color, fonts</source>
-        <translation>tema, modo escuro, modo claro, cor de destaque, fontes</translation>
+        <source>theme, dark mode, light mode, accent color, fonts, glass, transparency, blur, reduce motion</source>
+        <translation>tema, modo escuro, modo claro, cor de destaque, fontes, vidro, transparência, desfoque, reduzir movimento, blur</translation>
     </message>
     <message>
         <source>animations, blur, transparency, windows</source>
@@ -3633,6 +3781,359 @@
     <message>
         <source>Settings</source>
         <translation>Configurações</translation>
+    </message>
+</context>
+<context>
+    <name>ContinuityLayout</name>
+    <message>
+        <source>This computer</source>
+        <translation>Este computador</translation>
+    </message>
+    <message>
+        <source>Connected</source>
+        <translation>Conectado</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Não conectado</translation>
+    </message>
+    <message>
+        <source>Offline</source>
+        <translation>Fora da rede</translation>
+    </message>
+</context>
+<context>
+    <name>ContinuityPage</name>
+    <message>
+        <source>Shared Keyboard and Mouse</source>
+        <translation>Teclado e mouse compartilhados</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Desligado</translation>
+    </message>
+    <message>
+        <source>Starting…</source>
+        <translation>Iniciando…</translation>
+    </message>
+    <message>
+        <source>Ready: waiting for the other computers</source>
+        <translation>Pronto: aguardando os outros computadores</translation>
+    </message>
+    <message>
+        <source>Sharing with %1</source>
+        <translation>Compartilhando com %1</translation>
+    </message>
+    <message>
+        <source>Using the keyboard and mouse of %1</source>
+        <translation>Usando o teclado e o mouse de %1</translation>
+    </message>
+    <message>
+        <source>Connecting to %1…</source>
+        <translation>Conectando a %1…</translation>
+    </message>
+    <message>
+        <source>Pair with a principal computer to use its keyboard and mouse</source>
+        <translation>Pareie com um computador principal para usar o teclado e o mouse dele</translation>
+    </message>
+    <message>
+        <source>Deskflow isn&apos;t installed</source>
+        <translation>O Deskflow não está instalado</translation>
+    </message>
+    <message>
+        <source>Port %1 is used by another program</source>
+        <translation>A porta %1 está em uso por outro programa</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t create this computer&apos;s certificate</source>
+        <translation>Não foi possível criar o certificado deste computador</translation>
+    </message>
+    <message>
+        <source>Waiting for it to connect with Deskflow…</source>
+        <translation>Aguardando ele se conectar pelo Deskflow…</translation>
+    </message>
+    <message>
+        <source>Waiting for confirmation…</source>
+        <translation>Aguardando confirmação…</translation>
+    </message>
+    <message>
+        <source>Connected</source>
+        <translation>Conectado</translation>
+    </message>
+    <message>
+        <source>Paired</source>
+        <translation>Pareado</translation>
+    </message>
+    <message>
+        <source>Paired · not on the network now</source>
+        <translation>Pareado · fora da rede agora</translation>
+    </message>
+    <message>
+        <source>Added by hand · Deskflow, Synergy or Input Leap</source>
+        <translation>Adicionado à mão · Deskflow, Synergy ou Input Leap</translation>
+    </message>
+    <message>
+        <source>On the network</source>
+        <translation>Na rede</translation>
+    </message>
+    <message>
+        <source>Install the lingmo-continuity package to use one keyboard and mouse across your computers.</source>
+        <translation>Instale o pacote lingmo-continuity para usar um teclado e um mouse em vários computadores.</translation>
+    </message>
+    <message>
+        <source>One keyboard and mouse for all your computers</source>
+        <translation>Um teclado e um mouse para todos os seus computadores</translation>
+    </message>
+    <message>
+        <source>Move the cursor past the edge of the screen and it goes on to the computer next to this one, with the same keyboard. Copy on one, paste on the other; drag files across to send them.</source>
+        <translation>Leve o cursor além da borda da tela e ele continua no computador ao lado, com o mesmo teclado. Copie em um, cole no outro; arraste arquivos pela borda para enviá-los.</translation>
+    </message>
+    <message>
+        <source>Deskflow, which moves the keyboard and mouse between computers, isn&apos;t installed (package deskflow).</source>
+        <translation>O Deskflow, que leva o teclado e o mouse de um computador ao outro, não está instalado (pacote deskflow).</translation>
+    </message>
+    <message>
+        <source>This computer</source>
+        <translation>Este computador</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nome</translation>
+    </message>
+    <message>
+        <source>How the other computers show this one.</source>
+        <translation>Como os outros computadores mostram este.</translation>
+    </message>
+    <message>
+        <source>This computer is the</source>
+        <translation>Este computador é o</translation>
+    </message>
+    <message>
+        <source>Principal</source>
+        <translation>Principal</translation>
+    </message>
+    <message>
+        <source>Secondary</source>
+        <translation>Secundário</translation>
+    </message>
+    <message>
+        <source>Its keyboard and mouse are shared: the other computers follow it.</source>
+        <translation>O teclado e o mouse dele são compartilhados: os outros computadores seguem este.</translation>
+    </message>
+    <message>
+        <source>It uses the keyboard and mouse of a principal computer. Arrange the computers on the principal.</source>
+        <translation>Ele usa o teclado e o mouse de um computador principal. A disposição é feita no principal.</translation>
+    </message>
+    <message>
+        <source>Principal computer</source>
+        <translation>Computador principal</translation>
+    </message>
+    <message>
+        <source>Arrangement</source>
+        <translation>Disposição</translation>
+    </message>
+    <message>
+        <source>Pair a computer below and drag it to the side where it sits on your desk.</source>
+        <translation>Pareie um computador abaixo e arraste-o para o lado em que ele fica na sua mesa.</translation>
+    </message>
+    <message>
+        <source>Drag the computers to match how they sit on your desk. The cursor crosses where their edges touch.</source>
+        <translation>Arraste os computadores para ficarem como estão na sua mesa. O cursor passa onde as bordas se encostam.</translation>
+    </message>
+    <message>
+        <source>%1 doesn&apos;t touch any other computer, so the cursor can&apos;t get there.</source>
+        <translation>%1 não encosta em nenhum outro computador, então o cursor não chega lá.</translation>
+    </message>
+    <message>
+        <source>The arrangement is set on the principal computer.</source>
+        <translation>A disposição é definida no computador principal.</translation>
+    </message>
+    <message>
+        <source>Computers</source>
+        <translation>Computadores</translation>
+    </message>
+    <message>
+        <source>Look Again</source>
+        <translation>Procurar de novo</translation>
+    </message>
+    <message>
+        <source>Looking for Lingmo computers on this network… On the other computer, turn on Shared Keyboard and Mouse too.</source>
+        <translation>Procurando computadores Lingmo nesta rede… No outro computador, ligue também Teclado e mouse compartilhados.</translation>
+    </message>
+    <message>
+        <source>principal</source>
+        <translation>principal</translation>
+    </message>
+    <message>
+        <source>secondary</source>
+        <translation>secundário</translation>
+    </message>
+    <message>
+        <source>Pair…</source>
+        <translation>Parear…</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
+        <source>Unpair…</source>
+        <translation>Desparear…</translation>
+    </message>
+    <message>
+        <source>On %1, open Deskflow (or Synergy, Input Leap), choose “Use another computer&apos;s keyboard and mouse” (client), enter %2 and turn TLS on. When it connects, this computer asks you to confirm its fingerprint.</source>
+        <translation>Em %1, abra o Deskflow (ou Synergy, Input Leap), escolha “Usar o teclado e o mouse de outro computador” (cliente), informe %2 e ligue o TLS. Quando ele se conectar, este computador pede para você confirmar a impressão digital dele.</translation>
+    </message>
+    <message>
+        <source>this computer&apos;s address</source>
+        <translation>o endereço deste computador</translation>
+    </message>
+    <message>
+        <source>On %1, open Deskflow (or Synergy, Input Leap) as the server, add this computer as “%2” and turn TLS on. Then pair: this computer asks you to confirm its fingerprint.</source>
+        <translation>Em %1, abra o Deskflow (ou Synergy, Input Leap) como servidor, adicione este computador como “%2” e ligue o TLS. Depois pareie: este computador pede para você confirmar a impressão digital dele.</translation>
+    </message>
+    <message>
+        <source>Name or IP address of another computer</source>
+        <translation>Nome ou endereço IP de outro computador</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>Adicionar</translation>
+    </message>
+    <message>
+        <source>Computers with Windows, macOS or another Linux work too, with Deskflow, Synergy or Input Leap.</source>
+        <translation>Computadores com Windows, macOS ou outro Linux também funcionam, com Deskflow, Synergy ou Input Leap.</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Opções</translation>
+    </message>
+    <message>
+        <source>These options are set on the principal computer.</source>
+        <translation>Estas opções são definidas no computador principal.</translation>
+    </message>
+    <message>
+        <source>Shared clipboard</source>
+        <translation>Área de transferência compartilhada</translation>
+    </message>
+    <message>
+        <source>Copy on one computer and paste on another.</source>
+        <translation>Copie em um computador e cole no outro.</translation>
+    </message>
+    <message>
+        <source>Crossing to the other computer</source>
+        <translation>Passar para o outro computador</translation>
+    </message>
+    <message>
+        <source>The cursor has to rest on the edge for a moment.</source>
+        <translation>O cursor precisa parar na borda por um instante.</translation>
+    </message>
+    <message>
+        <source>Tap the edge twice quickly to cross.</source>
+        <translation>Toque a borda duas vezes rápido para passar.</translation>
+    </message>
+    <message>
+        <source>As soon as the cursor reaches the edge.</source>
+        <translation>Assim que o cursor chega à borda.</translation>
+    </message>
+    <message>
+        <source>Right away</source>
+        <translation>Imediatamente</translation>
+    </message>
+    <message>
+        <source>After a pause at the edge</source>
+        <translation>Após uma pausa na borda</translation>
+    </message>
+    <message>
+        <source>Double tap on the edge</source>
+        <translation>Dois toques na borda</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>Pausa</translation>
+    </message>
+    <message>
+        <source>Time between taps</source>
+        <translation>Tempo entre os toques</translation>
+    </message>
+    <message>
+        <source>%1 ms</source>
+        <translation>%1 ms</translation>
+    </message>
+    <message>
+        <source>Keep the cursor on one computer</source>
+        <translation>Prender o cursor em um computador</translation>
+    </message>
+    <message>
+        <source>Press it to stop (and start again) crossing edges, e.g. in games.</source>
+        <translation>Pressione para parar (e voltar a) passar pelas bordas, por exemplo em jogos.</translation>
+    </message>
+    <message>
+        <source>Scroll Lock</source>
+        <translation>Scroll Lock</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Nenhum</translation>
+    </message>
+    <message>
+        <source>Go to the next computer</source>
+        <translation>Ir para o próximo computador</translation>
+    </message>
+    <message>
+        <source>Moves the cursor to the next computer without reaching an edge.</source>
+        <translation>Leva o cursor ao próximo computador sem precisar ir até a borda.</translation>
+    </message>
+    <message>
+        <source>Security</source>
+        <translation>Segurança</translation>
+    </message>
+    <message>
+        <source>Everything between the computers is encrypted (TLS), and only paired computers are let in: each one is known by its certificate, confirmed on both screens when pairing. When this is off, nothing listens on the network.</source>
+        <translation>Tudo entre os computadores é criptografado (TLS) e só computadores pareados entram: cada um é reconhecido pelo certificado, confirmado nas duas telas ao parear. Com o recurso desligado, nada fica escutando na rede.</translation>
+    </message>
+    <message>
+        <source>This computer&apos;s fingerprint</source>
+        <translation>Impressão digital deste computador</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <source>The firewall (%1) is on. For the other computers to reach this one, open %2. Nothing is changed without you:</source>
+        <translation>O firewall (%1) está ativo. Para os outros computadores alcançarem este, libere %2. Nada é mudado sem você:</translation>
+    </message>
+    <message>
+        <source>Unpair %1?</source>
+        <translation>Desparear %1?</translation>
+    </message>
+    <message>
+        <source>It stops sharing the keyboard and mouse right away and has to be paired again, with a new confirmation on both computers.</source>
+        <translation>Ele para de compartilhar o teclado e o mouse na hora e precisa ser pareado de novo, com nova confirmação nos dois computadores.</translation>
+    </message>
+    <message>
+        <source>Unpair</source>
+        <translation>Desparear</translation>
+    </message>
+</context>
+<context>
+    <name>Main</name>
+    <message>
+        <source>Phone and devices</source>
+        <translation>Celular e dispositivos</translation>
+    </message>
+    <message>
+        <source>Phone and devices is not installed</source>
+        <translation>Celular e dispositivos não está instalado</translation>
+    </message>
+    <message>
+        <source>Install the lingmo-share package to connect phones and send files to nearby devices.</source>
+        <translation>Instale o pacote lingmo-share para conectar celulares e enviar arquivos para dispositivos próximos.</translation>
     </message>
 </context>
 </TS>

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QSysInfo>
+#include <QVariantMap>
 #include <qqml.h>
 
 class About : public QObject
@@ -11,6 +12,7 @@ class About : public QObject
     Q_OBJECT
     Q_PROPERTY(bool isLingmoOS READ isLingmoOS CONSTANT)
     Q_PROPERTY(QString version READ version CONSTANT)
+    Q_PROPERTY(QVariantMap releaseInfo READ releaseInfo CONSTANT)
     Q_PROPERTY(QString hostName READ hostName CONSTANT)
     Q_PROPERTY(QString systemrelease READ systemrelease CONSTANT)
     Q_PROPERTY(QString debianversion READ debianversion CONSTANT)
@@ -36,6 +38,7 @@ public:
     Q_INVOKABLE bool checkForLingmoOS();
 
     QString version();
+    QVariantMap releaseInfo();
     QString hostName();
     QString systemrelease();
     QString debianversion();

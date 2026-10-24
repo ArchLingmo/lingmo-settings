@@ -140,6 +140,17 @@ LingmoUI.SettingsSideBar {
         }
 
         ListElement {
+            title: qsTr("Phone and devices")
+            name: "phone"
+            // Extra words the search field matches (comma separated)
+            keywords: qsTr("Android, iPhone, iPad, KDE Connect, LocalSend, share, send files, SMS, nearby")
+            page: "qrc:/qml/Phone/Main.qml"
+            iconSource: "phone.svg"
+            iconColor: "#30D158"
+            category: qsTr("Network and connection")
+        }
+
+        ListElement {
             title: qsTr("Proxy")
             name: "proxy"
             // Extra words the search field matches (comma separated)
@@ -167,7 +178,7 @@ LingmoUI.SettingsSideBar {
             title: qsTr("Appearance")
             name: "appearance"
             // Extra words the search field matches (comma separated)
-            keywords: qsTr("theme, dark mode, light mode, accent color, fonts")
+            keywords: qsTr("theme, dark mode, light mode, accent color, fonts, glass, transparency, blur, reduce motion")
             page: "qrc:/qml/Appearance/Main.qml"
             // source: "appearance.svg"
             iconSource: "appearance.svg"
@@ -278,6 +289,17 @@ LingmoUI.SettingsSideBar {
             // source: "touchpad.svg"
             iconSource: "touchpad.svg"
             iconColor: "#8E8E93"
+            category: qsTr("System")
+        }
+
+        ListElement {
+            title: qsTr("Shared Keyboard and Mouse")
+            name: "continuity"
+            // Extra words the search field matches (comma separated)
+            keywords: qsTr("Deskflow, Synergy, other computer, multiple computers, KVM, clipboard, screen edge")
+            page: "qrc:/qml/Continuity/ContinuityPage.qml"
+            iconSource: "continuity.svg"
+            iconColor: "#007AFF"
             category: qsTr("System")
         }
 
