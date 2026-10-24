@@ -28,6 +28,9 @@ class Language : public QObject
     Q_OBJECT
     Q_PROPERTY(QStringList languages READ languages NOTIFY loadLanguageFinished)
     Q_PROPERTY(int currentLanguage READ currentLanguage NOTIFY currentLanguageChanged)
+    // Personal folders (lingmo-userdirs): duplicates left in two languages
+    Q_PROPERTY(int duplicateFolders READ duplicateFolders NOTIFY duplicateFoldersChanged)
+    Q_PROPERTY(bool userDirsAvailable READ userDirsAvailable CONSTANT)
 
 public:
     explicit Language(QObject *parent = nullptr);
@@ -36,15 +39,24 @@ public:
     Q_INVOKABLE void setCurrentLanguage(int index);
     QStringList languages() const;
 
+    int duplicateFolders() const { return m_duplicateFolders; }
+    bool userDirsAvailable() const;
+    Q_INVOKABLE void refreshDuplicateFolders();
+    Q_INVOKABLE void renameFolders();
+    Q_INVOKABLE void mergeDuplicateFolders();
+
 signals:
     void loadLanguageFinished();
     void currentLanguageChanged();
+    void duplicateFoldersChanged();
 
 private:
     QDBusInterface m_interface;
     QStringList m_languageNames;
     QStringList m_languageCodes;
     int m_currentLanguage;
+    int m_duplicateFolders = 0;
+    bool m_counting = false;
 };
 
 #endif // LOCALE_H

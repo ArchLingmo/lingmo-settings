@@ -46,6 +46,7 @@
 #include "powermanager.h"
 #include "settingsuiadaptor.h"
 #include "touchpad.h"
+#include "appactions.h"
 #include "aimodule.h"
 #include "boxesmodule.h"
 #include "continuitymodule.h"
@@ -106,6 +107,10 @@ Application::Application(std::shared_ptr<QQmlApplicationEngine> engine)
     qmlRegisterSingletonType<AIModule>(uri, 1, 0, "AIModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
         return new AIModule();
     });
+    // Settings › IA › "Ações dos apps" (Lingmo Intents)
+    qmlRegisterSingletonType<AppActions>(uri, 1, 0, "AppActions", [](QQmlEngine*, QJSEngine*) -> QObject* {
+        return new AppActions();
+    });
     // One instance: recreating a Linux box takes a while and survives page changes
     qmlRegisterSingletonType<BoxesModule>(uri, 1, 0, "BoxesModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
         return new BoxesModule();
@@ -125,8 +130,11 @@ Application::Application(std::shared_ptr<QQmlApplicationEngine> engine)
 
     // Translations
     QLocale locale;
+    // LINGMO_SETTINGS_TRANSLATIONS: another folder (development builds)
+    const QString translationsDir = qEnvironmentVariableIsSet("LINGMO_SETTINGS_TRANSLATIONS")
+        ? qEnvironmentVariable("LINGMO_SETTINGS_TRANSLATIONS") : QStringLiteral("/usr/share/lingmo-settings/translations/");
     QString qmFilePath = QString("%1/%2.qm")
-                             .arg("/usr/share/lingmo-settings/translations/")
+                             .arg(translationsDir)
                              .arg(locale.name());
     if (QFile::exists(qmFilePath)) {
         QTranslator* translator = new QTranslator(QApplication::instance());

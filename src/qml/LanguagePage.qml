@@ -101,5 +101,69 @@ ItemPage {
                 }
             }
         }
+
+        // Personal folders follow the language (lingmo-userdirs)
+        LingmoUI.Card {
+            id: foldersCard
+            Layout.fillWidth: true
+            Layout.leftMargin: LingmoUI.Units.largeSpacing * 2
+            Layout.rightMargin: LingmoUI.Units.largeSpacing * 2
+            Layout.bottomMargin: LingmoUI.Units.largeSpacing * 2
+            visible: language.userDirsAvailable
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.leftMargin: foldersCard.padding
+                anchors.rightMargin: foldersCard.padding
+                anchors.topMargin: LingmoUI.Units.largeSpacing
+                anchors.bottomMargin: LingmoUI.Units.largeSpacing
+                spacing: LingmoUI.Units.smallSpacing
+
+                Label {
+                    text: qsTr("Personal folders")
+                    font.pointSize: LingmoUI.Units.fontSubheading
+                    font.bold: true
+                    color: LingmoUI.Theme.textColor
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.Wrap
+                    color: LingmoUI.Theme.secondaryTextColor
+                    font.pointSize: LingmoUI.Units.fontCaption
+                    text: language.duplicateFolders > 0
+                          ? qsTr("%n folder(s) exist twice, in different languages (for example Videos and Vídeos). Merging moves the files into one folder without overwriting anything.", "", language.duplicateFolders)
+                          : qsTr("Documents, Music, Pictures and the other personal folders can use the names of the selected language. Files are moved, never deleted.")
+                }
+
+                RowLayout {
+                    Layout.topMargin: LingmoUI.Units.smallSpacing
+                    spacing: LingmoUI.Units.largeSpacing
+
+                    LingmoUI.ActionButton {
+                        text: qsTr("Rename folders…")
+                        iconName: "folder"
+                        onClicked: language.renameFolders()
+                    }
+
+                    LingmoUI.ActionButton {
+                        visible: language.duplicateFolders > 0
+                        primary: true
+                        text: qsTr("Merge duplicate folders…")
+                        iconName: "folder-copy"
+                        onClicked: language.mergeDuplicateFolders()
+                    }
+                }
+            }
+        }
+    }
+
+    // The dialogs run apart from Settings: pick up their result
+    Timer {
+        interval: 4000
+        repeat: true
+        running: foldersCard.visible && Qt.application.state === Qt.ApplicationActive
+        triggeredOnStart: true
+        onTriggered: language.refreshDuplicateFolders()
     }
 }

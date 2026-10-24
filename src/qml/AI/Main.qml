@@ -64,6 +64,11 @@ ItemPage {
     ]
 
     // docs/assistant-contract.md: tool ids, groups and what each one does
+    function capabilityText(cap) {
+        return cap === "read" ? qsTr("Reads") : cap === "send" ? qsTr("Sends")
+             : cap === "create" ? qsTr("Creates") : cap === "write" ? qsTr("Changes") : cap
+    }
+
     readonly property var readTools: [
         { id: "system_info", name: qsTr("System information"), text: qsTr("Hardware and system: processor, memory, disks, battery and uptime.") },
         { id: "shell_read", name: qsTr("Terminal read commands"), text: qsTr("A fixed list of commands that only read, run in a sandbox without network.") },
@@ -215,12 +220,15 @@ ItemPage {
         interval: 150
         onTriggered: {
             // Pages can be pushed twice in a row on start; only the shown one takes the section
-            if (typeof rootWindow === "undefined" || rootWindow.pageSection !== "transcription"
-                    || page.StackView.status !== StackView.Active)
+            if (typeof rootWindow === "undefined" || page.StackView.status !== StackView.Active)
+                return
+            const target = rootWindow.pageSection === "transcription" ? transcriptionCard
+                         : rootWindow.pageSection === "intents" ? appActionsCard : null
+            if (!target)
                 return
             rootWindow.pageSection = ""
             scroller.contentY = Math.max(-scroller.topMargin,
-                                         Math.min(transcriptionCard.y - LingmoUI.Units.largeSpacing,
+                                         Math.min(target.y - LingmoUI.Units.largeSpacing,
                                                   scroller.contentHeight - scroller.height + scroller.bottomMargin))
         }
     }
@@ -884,6 +892,166 @@ ItemPage {
                 }
             }
 
+            // ---------------------------------------------------------- App actions (Lingmo Intents)
+            // "lingmo-settings -m ai/intents" scrolls here
+            RoundedItem {
+                id: appActionsCard
+                visible: AppActions.available
+
+                Label {
+                    text: qsTr("App actions")
+                    font.pointSize: LingmoUI.Units.fontSubheading
+                    font.weight: Font.DemiBold
+                }
+
+                Label {
+                    text: qsTr("What the apps offer to the Assistant, Workflows and Spotlight: create an alarm, send an email, save a screenshot… Turn off a whole app or a single action. Sending and changing things always asks you first, and no action deletes anything.")
+                    color: LingmoUI.Theme.secondaryTextColor
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
+                }
+
+                Label {
+                    visible: AppActions.apps.length === 0
+                    text: qsTr("No app offers actions yet.")
+                    color: LingmoUI.Theme.secondaryTextColor
+                }
+
+                Repeater {
+                    model: AppActions.apps
+
+                    ColumnLayout {
+                        id: appRow
+                        required property var modelData
+                        required property int index
+                        property bool expanded: false
+                        readonly property var appData: modelData
+                        Layout.fillWidth: true
+                        spacing: LingmoUI.Units.smallSpacing
+
+                        HorizontalDivider { visible: appRow.index > 0 }
+
+                        RowLayout {
+                            spacing: LingmoUI.Units.largeSpacing
+                            Layout.fillWidth: true
+
+                            LingmoUI.IconItem {
+                                source: appRow.appData.icon
+                                Layout.preferredWidth: 32
+                                Layout.preferredHeight: 32
+                                opacity: appRow.appData.enabled ? 1 : 0.5
+                            }
+
+                            ColumnLayout {
+                                spacing: 0
+                                Layout.fillWidth: true
+
+                                Label {
+                                    text: appRow.appData.name
+                                }
+
+                                Label {
+                                    text: appRow.appData.intents.map(i => i.title).join(" · ")
+                                    color: LingmoUI.Theme.secondaryTextColor
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                }
+
+                                TapHandler { onTapped: appRow.expanded = !appRow.expanded }
+                                HoverHandler { cursorShape: Qt.PointingHandCursor }
+                            }
+
+                            LingmoUI.IconItem {
+                                source: appRow.expanded ? "pan-up-symbolic" : "pan-down-symbolic"
+                                color: LingmoUI.Theme.secondaryTextColor
+                                Layout.preferredWidth: 16
+                                Layout.preferredHeight: 16
+                                TapHandler { onTapped: appRow.expanded = !appRow.expanded }
+                            }
+
+                            Switch {
+                                checked: appRow.appData.enabled
+                                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                rightPadding: 0
+                                onToggled: AppActions.setAppEnabled(appRow.appData.app, checked)
+                            }
+                        }
+
+                        ColumnLayout {
+                            visible: appRow.expanded
+                            spacing: LingmoUI.Units.largeSpacing
+                            Layout.fillWidth: true
+                            Layout.leftMargin: 32 + LingmoUI.Units.largeSpacing
+                            Layout.topMargin: LingmoUI.Units.smallSpacing
+
+                            Repeater {
+                                model: appRow.appData.intents
+
+                                RowLayout {
+                                    id: intentRow
+                                    required property var modelData
+                                    spacing: LingmoUI.Units.largeSpacing * 2
+                                    Layout.fillWidth: true
+
+                                    ColumnLayout {
+                                        spacing: 2
+                                        Layout.fillWidth: true
+
+                                        Label {
+                                            text: intentRow.modelData.title
+                                        }
+
+                                        Label {
+                                            text: intentRow.modelData.description
+                                            color: LingmoUI.Theme.secondaryTextColor
+                                            wrapMode: Text.WordWrap
+                                            Layout.fillWidth: true
+                                        }
+
+                                        Flow {
+                                            spacing: LingmoUI.Units.smallSpacing
+                                            Layout.fillWidth: true
+
+                                            Repeater {
+                                                model: intentRow.modelData.capabilities
+                                                LingmoUI.Badge {
+                                                    required property string modelData
+                                                    text: page.capabilityText(modelData)
+                                                    tint: modelData === "read" ? LingmoUI.Theme.greenColor
+                                                          : modelData === "send" ? LingmoUI.Theme.orangeColor
+                                                                                 : LingmoUI.Theme.highlightColor
+                                                }
+                                            }
+
+                                            LingmoUI.Badge {
+                                                visible: intentRow.modelData.confirm
+                                                text: qsTr("Asks first")
+                                                tint: LingmoUI.Theme.orangeColor
+                                                iconName: "dialog-question-symbolic"
+                                            }
+
+                                            LingmoUI.Badge {
+                                                visible: intentRow.modelData.needsUI
+                                                text: qsTr("Opens a window")
+                                                tint: LingmoUI.Theme.secondaryTextColor
+                                            }
+                                        }
+                                    }
+
+                                    Switch {
+                                        checked: intentRow.modelData.enabled
+                                        enabled: appRow.appData.enabled
+                                        Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                                        rightPadding: 0
+                                        onToggled: AppActions.setIntentEnabled(intentRow.modelData.id, checked)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // ---------------------------------------------------------- Assistant voice
             RoundedItem {
                 id: voiceCard
@@ -1036,17 +1204,26 @@ ItemPage {
 
                 LingmoUI.SegmentedControl {
                     fillWidth: true
-                    model: [qsTr("Conversation"), qsTr("General use"), qsTr("Programming"), qsTr("Reasoning")]
+                    model: [qsTr("Conversation"), qsTr("General use"), qsTr("Programming"), qsTr("Reasoning"), qsTr("Vision")]
                     Layout.fillWidth: true
                     visible: AIModule.llmfitAvailable
                     // Follows the setting (also after a click, like TabBar did)
-                    Binding on currentIndex { value: ["chat", "general", "coding", "reasoning"].indexOf(AIModule.useCase) }
+                    Binding on currentIndex { value: ["chat", "general", "coding", "reasoning", "multimodal"].indexOf(AIModule.useCase) }
                     onActivated: (index) => {
                         if (index === 0) { page.showAllRecommendations = false; AIModule.useCase = "chat" }
                         else if (index === 1) { page.showAllRecommendations = false; AIModule.useCase = "general" }
                         else if (index === 2) { page.showAllRecommendations = false; AIModule.useCase = "coding" }
                         else if (index === 3) { page.showAllRecommendations = false; AIModule.useCase = "reasoning" }
+                        else if (index === 4) { page.showAllRecommendations = false; AIModule.useCase = "multimodal" }
                     }
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    visible: AIModule.llmfitAvailable && AIModule.useCase === "multimodal"
+                    color: LingmoUI.Theme.secondaryTextColor
+                    text: qsTr("Models that see images. With one of them chosen as the model, “Ask about the screen” (Meta+S) looks at the selected area itself; other models only read its text.")
                 }
 
                 Label {

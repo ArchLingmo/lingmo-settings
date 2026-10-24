@@ -23,13 +23,15 @@
 #include <QDir>
 
 #include <QDBusPendingCall>
+#include <QProcess>
+#include <QStandardPaths>
 
 #include <unicode/locid.h>
 #include <unicode/unistr.h>
 
 static const QStringList supportList = {"en_US", "en_GB", "de_DE", "cs_CZ", "es_ES",
                                         "es_MX", "ar_AA", "bg_BG", "fa_IR", "fi_FI", "fr_FR",
-                                        "uk_UA", "uz_UZ", "hu_HU", "hi_IN", "id_ID"
+                                        "uk_UA", "uz_UZ", "hu_HU", "hi_IN", "id_ID",
                                         "it_IT", "ja_JP", "nb_NO", "ne_NP", "pl_PL",
                                         "pt_BR", "pt_PT", "ru_RU", "sv_SE", "so",
                                         "be_BY", "be_Latn", "tr_TR", "zh_CN", "zh_HK", "zh_TW"
@@ -92,4 +94,46 @@ void Language::setCurrentLanguage(int index)
 QStringList Language::languages() const
 {
     return m_languageNames;
+}
+
+bool Language::userDirsAvailable() const
+{
+    return !QStandardPaths::findExecutable(QStringLiteral("lingmo-userdirs")).isEmpty();
+}
+
+void Language::refreshDuplicateFolders()
+{
+    if (m_counting || !userDirsAvailable())
+        return;
+    m_counting = true;
+    auto *process = new QProcess(this);
+    connect(process, &QProcess::finished, this, [this, process](int exitCode) {
+        m_counting = false;
+        const int count = exitCode == 0 ? process->readAllStandardOutput().trimmed().toInt() : 0;
+        process->deleteLater();
+        if (count != m_duplicateFolders) {
+            m_duplicateFolders = count;
+            emit duplicateFoldersChanged();
+        }
+    });
+    process->start(QStringLiteral("lingmo-userdirs"), {QStringLiteral("--count-duplicates")});
+}
+
+// The dialogs run on their own (detached): closing Settings must never cut a
+// rename or merge in half
+void Language::renameFolders()
+{
+    if (m_currentLanguage < 0 || m_currentLanguage >= m_languageCodes.size())
+        return;
+    QProcess::startDetached(QStringLiteral("lingmo-userdirs"),
+                            {QStringLiteral("--language-changed"), m_languageCodes.at(m_currentLanguage),
+                             QStringLiteral("--force")});
+}
+
+void Language::mergeDuplicateFolders()
+{
+    QStringList args{QStringLiteral("--merge-duplicates")};
+    if (m_currentLanguage >= 0 && m_currentLanguage < m_languageCodes.size())
+        args << QStringLiteral("--locale") << m_languageCodes.at(m_currentLanguage);
+    QProcess::startDetached(QStringLiteral("lingmo-userdirs"), args);
 }

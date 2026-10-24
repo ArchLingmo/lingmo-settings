@@ -84,6 +84,17 @@ target_link_libraries(${PROJECT_NAME}
         LingmoLogger
 )
 
+# Lingmo Intents: settings.open (com.lingmo.SettingsUI.Intents, `lingmo-settings --intents`)
+# and the "Ações dos apps" section of Settings › IA
+find_package(LingmoIntents 1.0 QUIET)
+if(LingmoIntents_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_LINGMO_INTENTS)
+    target_link_libraries(${PROJECT_NAME} LingmoIntents::LingmoIntents)
+    lingmo_install_intents(MANIFEST data/intents/lingmo-settings.json SERVICE data/com.lingmo.SettingsUI.Intents.service)
+else()
+    message(WARNING "LingmoIntents not found: Settings is built without app actions (intents)")
+endif()
+
 # Unit tests (off for packages): cmake -DBUILD_TESTING=ON, then ctest
 option(BUILD_TESTING "Build the unit tests" OFF)
 if(BUILD_TESTING)

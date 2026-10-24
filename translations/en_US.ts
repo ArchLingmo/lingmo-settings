@@ -147,6 +147,13 @@
         <source>Language</source>
         <translation>Language</translation>
     </message>
+    <message numerus="yes">
+        <source>%n folder(s) exist twice, in different languages (for example Videos and Vídeos). Merging moves the files into one folder without overwriting anything.</source>
+        <translation>
+            <numerusform>%n folder exists twice, in different languages (for example Videos and Vídeos). Merging moves the files into one folder without overwriting anything.</numerusform>
+            <numerusform>%n folders exist twice, in different languages (for example Videos and Vídeos). Merging moves the files into one folder without overwriting anything.</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>Main</name>

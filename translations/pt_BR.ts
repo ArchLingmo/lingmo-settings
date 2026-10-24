@@ -184,6 +184,10 @@
         <translation>Preciso</translation>
     </message>
     <message>
+        <source>Vision</source>
+        <translation>Visão</translation>
+    </message>
+    <message>
         <source>Multilingual/pt-BR</source>
         <translation>Multilíngue/pt-BR</translation>
     </message>
@@ -1082,6 +1086,29 @@
     <message>
         <source>Language</source>
         <translation>Idioma</translation>
+    </message>
+    <message>
+        <source>Personal folders</source>
+        <translation>Pastas pessoais</translation>
+    </message>
+    <message>
+        <source>Documents, Music, Pictures and the other personal folders can use the names of the selected language. Files are moved, never deleted.</source>
+        <translation>Documentos, Músicas, Imagens e as outras pastas pessoais podem usar os nomes do idioma escolhido. Os arquivos são movidos, nunca apagados.</translation>
+    </message>
+    <message>
+        <source>Rename folders…</source>
+        <translation>Renomear pastas…</translation>
+    </message>
+    <message>
+        <source>Merge duplicate folders…</source>
+        <translation>Juntar pastas duplicadas…</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n folder(s) exist twice, in different languages (for example Videos and Vídeos). Merging moves the files into one folder without overwriting anything.</source>
+        <translation>
+            <numerusform>%n pasta existe duas vezes, em idiomas diferentes (por exemplo Videos e Vídeos). Juntar move os arquivos para uma pasta só, sem sobrescrever nada.</numerusform>
+            <numerusform>%n pastas existem duas vezes, em idiomas diferentes (por exemplo Videos e Vídeos). Juntar move os arquivos para uma pasta só, sem sobrescrever nada.</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -2505,6 +2532,14 @@
         <translation>Mostrar todos os %1</translation>
     </message>
     <message>
+        <source>Vision</source>
+        <translation>Visão</translation>
+    </message>
+    <message>
+        <source>Models that see images. With one of them chosen as the model, “Ask about the screen” (Meta+S) looks at the selected area itself; other models only read its text.</source>
+        <translation>Modelos que enxergam imagens. Com um deles escolhido como modelo, o “Perguntar sobre a tela” (Meta+S) olha a própria área selecionada; os outros modelos só leem o texto dela.</translation>
+    </message>
+    <message>
         <source>Other model</source>
         <translation>Outro modelo</translation>
     </message>
@@ -3178,6 +3213,42 @@
     <message>
         <source>No voice installed. Install “piper-tts” and a voice for your language (natural) or “espeak-ng” (robotic).</source>
         <translation>Nenhuma voz instalada. Instale o “piper-tts” e uma voz do seu idioma (natural) ou o “espeak-ng” (robótica).</translation>
+    </message>
+    <message>
+        <source>App actions</source>
+        <translation>Ações dos apps</translation>
+    </message>
+    <message>
+        <source>What the apps offer to the Assistant, Workflows and Spotlight: create an alarm, send an email, save a screenshot… Turn off a whole app or a single action. Sending and changing things always asks you first, and no action deletes anything.</source>
+        <translation>O que os apps oferecem ao Assistente, aos Fluxos e ao Spotlight: criar um alarme, enviar um e-mail, salvar uma captura… Desligue um app inteiro ou só uma ação. Enviar e alterar coisas sempre pede sua confirmação antes, e nenhuma ação apaga nada.</translation>
+    </message>
+    <message>
+        <source>No app offers actions yet.</source>
+        <translation>Nenhum app oferece ações ainda.</translation>
+    </message>
+    <message>
+        <source>Asks first</source>
+        <translation>Pergunta antes</translation>
+    </message>
+    <message>
+        <source>Opens a window</source>
+        <translation>Abre uma janela</translation>
+    </message>
+    <message>
+        <source>Reads</source>
+        <translation>Lê</translation>
+    </message>
+    <message>
+        <source>Sends</source>
+        <translation>Envia</translation>
+    </message>
+    <message>
+        <source>Creates</source>
+        <translation>Cria</translation>
+    </message>
+    <message>
+        <source>Changes</source>
+        <translation>Altera</translation>
     </message>
 </context>
 <context>

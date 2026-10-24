@@ -35,9 +35,15 @@
 #include <qqmlapplicationengine.h>
 
 #include "application.h"
+#include "settingsintents.h"
 
 int main(int argc, char* argv[])
 {
+#ifdef HAVE_LINGMO_INTENTS
+    // settings.open for the Assistant, Flows and Spotlight (D-Bus activation)
+    if (SettingsIntents::requested(argc, argv))
+        return SettingsIntents::run(argc, argv);
+#endif
     QCoreApplication::setAttribute(Qt::AA_UseOpenGLES, true);
 
     QGuiApplication app(argc, argv);

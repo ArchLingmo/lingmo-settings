@@ -607,6 +607,7 @@ void AIModule::fetchTags()
                 m.embedding = caps.contains(QStringLiteral("embedding")) && !caps.contains(QStringLiteral("completion"));
                 m.thinking = caps.contains(QStringLiteral("thinking"));
                 m.tools = caps.contains(QStringLiteral("tools"));
+                m.vision = caps.contains(QStringLiteral("vision"));
             } else {
                 const QString family = details.value(QStringLiteral("family")).toString();
                 m.embedding = family.contains(QLatin1String("bert")) || m.name.contains(QLatin1String("embed"));
@@ -644,7 +645,8 @@ QVariantList AIModule::installedModels() const
             {QStringLiteral("thinking"), m.thinking},
             {QStringLiteral("tools"), m.tools},
             {QStringLiteral("inUse"), normalizedName(m.name) == current},
-            {QStringLiteral("tags"), modelTagList(m.name, m.parameterSize, m.embedding, m.tools, m.thinking)},
+            {QStringLiteral("tags"), withVisionTag(modelTagList(m.name, m.parameterSize, m.embedding, m.tools, m.thinking),
+                                                   m.vision)},
             {QStringLiteral("fitLevel"), QString()},
             {QStringLiteral("fitText"), QString()},
         };
@@ -863,8 +865,10 @@ bool AIModule::llmfitAvailable() const
 
 void AIModule::setUseCase(const QString &useCase)
 {
+    // multimodal: models that read images, for "Ask about the screen"
     static const QStringList known = {QStringLiteral("chat"), QStringLiteral("general"),
-                                      QStringLiteral("coding"), QStringLiteral("reasoning")};
+                                      QStringLiteral("coding"), QStringLiteral("reasoning"),
+                                      QStringLiteral("multimodal")};
     if (!known.contains(useCase) || useCase == m_useCase)
         return;
     m_useCase = useCase;
@@ -1095,9 +1099,12 @@ QVariantMap AIModule::fitToMap(const FitInfo &fit) const
                                     [&key](const Installed &m) { return normalizedName(m.name) == key; });
     const bool installed = found != m_installed.cend();
     // Capabilities are only known once installed
+    // The "Vision" list only has models that read images
     const QVariantList tags = installed
-        ? modelTagList(found->name, found->parameterSize, found->embedding, found->tools, found->thinking)
-        : modelTagList(fit.ollamaName, fit.parameters, false, false, false);
+        ? withVisionTag(modelTagList(found->name, found->parameterSize, found->embedding, found->tools, found->thinking),
+                        found->vision)
+        : withVisionTag(modelTagList(fit.ollamaName, fit.parameters, false, false, false),
+                        m_useCase == QLatin1String("multimodal"));
     QString speed;
     if (fit.tps > 0)
         speed = tr("≈ %1 tokens/s").arg(locale.toString(qRound(fit.tps)));
@@ -1152,6 +1159,13 @@ QVariantList AIModule::modelTagList(const QString &name, const QString &paramete
     for (const QString &id : ids)
         list.append(QVariantMap{{QStringLiteral("id"), id}, {QStringLiteral("text"), tagText(id)}});
     return list;
+}
+
+QVariantList AIModule::withVisionTag(QVariantList tags, bool vision) const
+{
+    if (vision)
+        tags.append(QVariantMap{{QStringLiteral("id"), QStringLiteral("vision")}, {QStringLiteral("text"), tr("Vision")}});
+    return tags;
 }
 
 QString AIModule::tagText(const QString &id) const

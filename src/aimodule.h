@@ -267,6 +267,7 @@ private:
         bool embedding = false;
         bool thinking = false;
         bool tools = false;
+        bool vision = false;      // reads images ("Ask about the screen" looks at the picture)
     };
 
     struct FitInfo {
@@ -317,6 +318,8 @@ private:
     QVariantList modelTagList(const QString &name, const QString &parameterSize,
                               bool embedding, bool tools, bool thinking) const;
     QString tagText(const QString &id) const;
+    // + "Vision" when the model reads images
+    QVariantList withVisionTag(QVariantList tags, bool vision) const;
     void loadSubtitleConfig(const QSettings &settings);
     void writeSubtitleValue(const QString &key, const QString &value);
     void detectWhisperEngines();

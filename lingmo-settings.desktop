@@ -8,3 +8,4 @@ Terminal=false
 Type=Application
 StartupNotify=true
 Categories=Settings;
+X-Lingmo-Intents=settings.open;

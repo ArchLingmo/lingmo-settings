@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.lingmo.SettingsUI.Intents
+Exec=/usr/bin/lingmo-settings --intents

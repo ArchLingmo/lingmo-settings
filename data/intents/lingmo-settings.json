@@ -1,0 +1,118 @@
+{
+  "format": "lingmo-intents",
+  "version": 1,
+  "app": "lingmo-settings",
+  "name": {
+    "en": "Settings",
+    "pt_BR": "Configurações"
+  },
+  "icon": "lingmo-settings",
+  "desktop": "lingmo-settings.desktop",
+  "dbus": {
+    "service": "com.lingmo.SettingsUI.Intents",
+    "path": "/Intents"
+  },
+  "intents": [
+    {
+      "id": "settings.open",
+      "title": {
+        "en": "Open a settings page",
+        "pt_BR": "Abrir uma página das Configurações"
+      },
+      "description": {
+        "en": "Opens Lingmo Settings on a page (Wi-Fi, Bluetooth, Display, AI…). Nothing is changed.",
+        "pt_BR": "Abre as Configurações do Lingmo numa página (Wi-Fi, Bluetooth, Tela, IA…). Nada é alterado."
+      },
+      "summary": {
+        "en": "Open Settings › {page}",
+        "pt_BR": "Abrir Configurações › {page}"
+      },
+      "icon": "preferences-system",
+      "capabilities": [
+        "read"
+      ],
+      "needsUI": true,
+      "assistantTool": "desktop_actions",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "enum": [
+              "wlan",
+              "ethernet",
+              "bluetooth",
+              "phone",
+              "proxy",
+              "display",
+              "appearance",
+              "effects",
+              "background",
+              "dock",
+              "accounts",
+              "notifications",
+              "sound",
+              "camera",
+              "mouse",
+              "touchpad",
+              "continuity",
+              "datetime",
+              "accessibility",
+              "keyboard",
+              "shortcuts",
+              "startup",
+              "defaultapps",
+              "boxes",
+              "ai",
+              "language",
+              "battery",
+              "power",
+              "systemupdate",
+              "about"
+            ],
+            "title": {
+              "en": "Page",
+              "pt_BR": "Página"
+            }
+          },
+          "section": {
+            "type": "string",
+            "default": "",
+            "pattern": "[a-z0-9_-]*",
+            "maxLength": 40,
+            "title": {
+              "en": "Section",
+              "pt_BR": "Seção"
+            }
+          }
+        },
+        "required": [
+          "page"
+        ]
+      },
+      "result": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "title": {
+              "en": "Page",
+              "pt_BR": "Página"
+            }
+          }
+        }
+      },
+      "examples": {
+        "pt_BR": [
+          "abrir configurações de {page}",
+          "configurações {page}",
+          "abrir {page} nas configurações"
+        ],
+        "en": [
+          "open {page} settings",
+          "settings {page}"
+        ]
+      }
+    }
+  ]
+}
