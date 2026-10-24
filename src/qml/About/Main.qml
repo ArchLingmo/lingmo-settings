@@ -122,12 +122,6 @@ ItemPage {
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
-                        Label {
-                            visible: about.releaseInfo.symbol !== ""
-                            text: about.releaseInfo.symbol + " · " + about.releaseInfo.number
-                            color: LingmoUI.Theme.secondaryTextColor
-                            font.pointSize: LingmoUI.Units.fontSubheading
-                        }
                         LingmoUI.ActionButton {
                             visible: about.releaseInfo.blog !== ""
                             text: qsTranslate("About", "What's new in this release")
