@@ -38,27 +38,78 @@ ItemPage {
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: LingmoUI.Units.largeSpacing
-                        Image {
+                        // The logo and wordmark stay an image; the release badge under the
+                        // wordmark is drawn here from /etc/lingmo-release, in the place,
+                        // shape and colour of the badge the SVG used to carry ("HELIUM")
+                        Item {
+                            id: logoBox
                             Layout.alignment: Qt.AlignHCenter
                             Layout.preferredWidth: 250
-                            Layout.preferredHeight: 65
-                            source: "qrc:/images/logo-2.svg"
-                            fillMode: Image.PreserveAspectFit
-                        }
-                        Rectangle {
-                            visible: about.releaseInfo.pretty !== ""
-                            Layout.alignment: Qt.AlignHCenter
-                            implicitWidth: badge.implicitWidth + 32
-                            implicitHeight: 36
-                            radius: 18
-                            color: "#2779FF"
-                            Label {
-                                id: badge
-                                anchors.centerIn: parent
-                                text: about.releaseInfo.pretty.toLocaleUpperCase()
-                                color: "white"
-                                font.weight: Font.DemiBold
-                                font.letterSpacing: 2
+                            Layout.preferredHeight: 250 * 354 / 1364.06
+                            // logo-2.svg units -> pixels
+                            readonly property real unit: width / 1364.06
+
+                            Image {
+                                anchors.fill: parent
+                                source: "qrc:/images/logo-2.svg"
+                                sourceSize: Qt.size(width * 2, height * 2)
+                                fillMode: Image.PreserveAspectFit
+                                smooth: true
+                            }
+
+                            Rectangle {
+                                id: codenameBadge
+                                visible: about.releaseInfo.pretty !== ""
+                                x: 464 * logoBox.unit
+                                y: 233 * logoBox.unit
+                                height: 121 * logoBox.unit
+                                // At least the SVG's width; longer names grow to the right
+                                width: Math.max(518 * logoBox.unit, badgeRow.implicitWidth + height * 1.1)
+                                color: "#2779FF"
+                                // Rounded corners but the bottom right, like the original badge
+                                readonly property real corner: 34.3 * logoBox.unit
+                                topLeftRadius: corner
+                                topRightRadius: corner
+                                bottomLeftRadius: corner
+                                bottomRightRadius: 0
+
+                                Row {
+                                    id: badgeRow
+                                    anchors.centerIn: parent
+                                    spacing: codenameBadge.height * 0.32
+                                    LayoutMirroring.enabled: false
+
+                                    Label {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: about.releaseInfo.pretty.toLocaleUpperCase()
+                                        color: "#FFFFFF"
+                                        // Room left for accents (SILÍCIO) inside the badge
+                                        font.pixelSize: Math.round(codenameBadge.height * 0.6)
+                                        font.weight: Font.Medium
+                                        font.letterSpacing: font.pixelSize * 0.16
+                                    }
+
+                                    // The element, subtly: atomic number raised before the symbol
+                                    Row {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        visible: about.releaseInfo.symbol !== ""
+                                        opacity: 0.72
+                                        spacing: 1
+                                        Label {
+                                            text: about.releaseInfo.number
+                                            color: "#FFFFFF"
+                                            font.pixelSize: Math.round(codenameBadge.height * 0.3)
+                                            font.weight: Font.Medium
+                                        }
+                                        Label {
+                                            text: about.releaseInfo.symbol
+                                            color: "#FFFFFF"
+                                            font.pixelSize: Math.round(codenameBadge.height * 0.46)
+                                            font.weight: Font.DemiBold
+                                            topPadding: codenameBadge.height * 0.08
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
