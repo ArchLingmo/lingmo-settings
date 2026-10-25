@@ -96,6 +96,25 @@ QStringList Language::languages() const
     return m_languageNames;
 }
 
+bool Language::needsRelogin() const
+{
+    if (m_currentLanguage < 0 || m_currentLanguage >= m_languageCodes.size())
+        return false;
+    // the language this session (and so this process) was started with
+    QString running = QString::fromLocal8Bit(qgetenv("LANGUAGE")).section(QLatin1Char(':'), 0, 0);
+    if (running.isEmpty())
+        running = QString::fromLocal8Bit(qgetenv("LANG")).section(QLatin1Char('.'), 0, 0);
+    return !running.isEmpty() && running != m_languageCodes.at(m_currentLanguage);
+}
+
+void Language::logout()
+{
+    QDBusInterface session(QStringLiteral("com.lingmo.Session"), QStringLiteral("/Session"),
+                           QStringLiteral("com.lingmo.Session"));
+    if (session.isValid())
+        session.asyncCall(QStringLiteral("logout"));
+}
+
 bool Language::userDirsAvailable() const
 {
     return !QStandardPaths::findExecutable(QStringLiteral("lingmo-userdirs")).isEmpty();

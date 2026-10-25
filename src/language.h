@@ -31,6 +31,9 @@ class Language : public QObject
     // Personal folders (lingmo-userdirs): duplicates left in two languages
     Q_PROPERTY(int duplicateFolders READ duplicateFolders NOTIFY duplicateFoldersChanged)
     Q_PROPERTY(bool userDirsAvailable READ userDirsAvailable CONSTANT)
+    // The interface language comes from the session environment: a new choice only
+    // shows everywhere after logging out and back in
+    Q_PROPERTY(bool needsRelogin READ needsRelogin NOTIFY currentLanguageChanged)
 
 public:
     explicit Language(QObject *parent = nullptr);
@@ -44,6 +47,9 @@ public:
     Q_INVOKABLE void refreshDuplicateFolders();
     Q_INVOKABLE void renameFolders();
     Q_INVOKABLE void mergeDuplicateFolders();
+
+    bool needsRelogin() const;
+    Q_INVOKABLE void logout();
 
 signals:
     void loadLanguageFinished();

@@ -19,6 +19,23 @@ ItemPage {
         anchors.fill: parent
         anchors.topMargin: LingmoUI.Units.smallSpacing
 
+        LingmoUI.Banner {
+            visible: language.needsRelogin
+            type: LingmoUI.Banner.Info
+            closable: false
+            title: qsTr("Log out to finish changing the language")
+            text: qsTr("Apps already open keep the previous language until you log out and back in. Save your work first.")
+            Layout.fillWidth: true
+            Layout.leftMargin: LingmoUI.Units.largeSpacing * 2
+            Layout.rightMargin: LingmoUI.Units.largeSpacing * 2
+            Layout.topMargin: LingmoUI.Units.largeSpacing
+
+            LingmoUI.ActionButton {
+                text: qsTr("Log out now")
+                onClicked: language.logout()
+            }
+        }
+
         ListView {
             id: listView
 

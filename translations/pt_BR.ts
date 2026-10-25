@@ -1084,6 +1084,21 @@
 <context>
     <name>LanguagePage</name>
     <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Log out to finish changing the language</source>
+        <translation>Saia e entre de novo para concluir a troca de idioma</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Apps already open keep the previous language until you log out and back in. Save your work first.</source>
+        <translation>Os apps já abertos continuam no idioma anterior até você sair e entrar de novo. Salve seu trabalho antes.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Log out now</source>
+        <translation>Sair agora</translation>
+    </message>
+    <message>
         <source>Language</source>
         <translation>Idioma</translation>
     </message>
