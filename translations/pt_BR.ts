@@ -1125,6 +1125,21 @@
             <numerusform>%n pastas existem duas vezes, em idiomas diferentes (por exemplo Videos e Vídeos). Juntar move os arquivos para uma pasta só, sem sobrescrever nada.</numerusform>
         </translation>
     </message>
+    <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Reading languages (OCR)</source>
+        <translation>Idiomas de leitura (OCR)</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Languages Screenshots can read in images, such as Hebrew, Arabic or Chinese. Download only the ones you need.</source>
+        <translation>Idiomas que a Captura de tela consegue ler em imagens, como hebraico, árabe ou chinês. Baixe só os que você precisa.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/LanguagePage.qml" line="0"/>
+        <source>Manage…</source>
+        <translation>Gerenciar…</translation>
+    </message>
 </context>
 <context>
     <name>Main</name>
@@ -3357,6 +3372,14 @@
 <context>
     <name>SideBar</name>
     <message>
+        <source>Help &amp; tips</source>
+        <translation>Ajuda e dicas</translation>
+    </message>
+    <message>
+        <source>help, how to, tips, shortcuts, gestures, apps</source>
+        <translation>ajuda, como usar, dicas, atalhos, gestos, apps</translation>
+    </message>
+    <message>
         <source>Phone and devices</source>
         <translation>Celular e dispositivos</translation>
     </message>
@@ -3453,8 +3476,8 @@
         <translation>Aplicativos padrão</translation>
     </message>
     <message>
-        <source>AI, assistant, model, LLM, chat, whisper, subtitles, transcription</source>
-        <translation>IA, assistente, modelo, LLM, chat, whisper, legendas, transcrição</translation>
+        <source>AI, assistant, model, LLM, chat, whisper, subtitles, transcription, translate, live translation, translator, dubbing, cloned voice</source>
+        <translation>IA, assistente, modelo, LLM, chat, whisper, legendas, transcrição, tradução, legenda, tradutor, translate, subtitles, dublagem, voz clonada, tradução ao vivo</translation>
     </message>
     <message>
         <source>Language</source>
@@ -4220,6 +4243,1078 @@
     <message>
         <source>Install the lingmo-share package to connect phones and send files to nearby devices.</source>
         <translation>Instale o pacote lingmo-share para conectar celulares e enviar arquivos para dispositivos próximos.</translation>
+    </message>
+</context>
+<context>
+    <name>ClonedVoice</name>
+    <message>
+        <source>(recommended)</source>
+        <translation>(recomendado)</translation>
+    </message>
+    <message>
+        <source>OmniVoice suits this computer best (it fits beside the most accurate speech recognition). Turn it on in Voice Studio; the apps use Chatterbox meanwhile.</source>
+        <translation>O OmniVoice é o que combina melhor com este computador (cabe ao lado do reconhecimento de fala mais preciso). Ligue-o no Estúdio de Voz; enquanto isso, os apps usam o Chatterbox.</translation>
+    </message>
+    <message>
+        <source>On this computer a cloned voice barely fits in the video memory: piper voices are recommended for live translation.</source>
+        <translation>Neste computador uma voz clonada mal cabe na memória de vídeo: para a tradução ao vivo, as vozes do piper são as recomendadas.</translation>
+    </message>
+    <message>
+        <source>On this computer a cloned voice runs on the processor, several seconds per sentence: piper voices are recommended for live translation.</source>
+        <translation>Neste computador uma voz clonada roda no processador, vários segundos por frase: para a tradução ao vivo, as vozes do piper são as recomendadas.</translation>
+    </message>
+    <message>
+        <source>You chose an engine other than the one recommended for this computer.</source>
+        <translation>Você escolheu um motor diferente do recomendado para este computador.</translation>
+    </message>
+    <message>
+        <source>Use recommended</source>
+        <translation>Usar o recomendado</translation>
+    </message>
+    <message>
+        <source>Cloned voice</source>
+        <translation>Voz clonada</translation>
+    </message>
+    <message>
+        <source>Free for commercial use</source>
+        <translation>Livre para uso comercial</translation>
+    </message>
+    <message>
+        <source>More faithful and faster · personal, non-commercial use only</source>
+        <translation>Mais fiel e mais rápido · só uso pessoal, não comercial</translation>
+    </message>
+    <message>
+        <source>The engine that speaks with a voice cloned from a recording, in every app: live translation, Voice Studio, Studio, podcasts and the Tutor.</source>
+        <translation>O motor que fala com uma voz clonada de uma gravação, em todos os apps: tradução ao vivo, Estúdio de Voz, Studio, podcasts e o Tutor.</translation>
+    </message>
+    <message>
+        <source>Turn on in Voice Studio</source>
+        <translation>Ligar no Estúdio de Voz</translation>
+    </message>
+    <message>
+        <source>Install lingmo-voicestudio to use OmniVoice.</source>
+        <translation>Instale o lingmo-voicestudio para usar o OmniVoice.</translation>
+    </message>
+    <message>
+        <source>OmniVoice is chosen but not turned on in Voice Studio: the apps use Chatterbox meanwhile.</source>
+        <translation>O OmniVoice está escolhido, mas não está ligado no Estúdio de Voz: enquanto isso, os apps usam o Chatterbox.</translation>
+    </message>
+</context>
+<context>
+    <name>LiveTranslation</name>
+    <message>
+        <source>Small, compressed (fast)</source>
+        <translation>Small, compactado (rápido)</translation>
+    </message>
+    <message>
+        <source>Large v3 Turbo, compressed (accurate)</source>
+        <translation>Large v3 Turbo, compactado (preciso)</translation>
+    </message>
+    <message>
+        <source>Large v3 Turbo (most accurate)</source>
+        <translation>Large v3 Turbo (o mais preciso)</translation>
+    </message>
+    <message>
+        <source>(recommended)</source>
+        <translation>(recomendado)</translation>
+    </message>
+    <message>
+        <source>no NVIDIA graphics card with CUDA</source>
+        <translation>sem placa de vídeo NVIDIA com CUDA</translation>
+    </message>
+    <message>
+        <source>%1, %2 GB</source>
+        <translation>%1, %2 GB</translation>
+    </message>
+    <message>
+        <source>instant draft refined by the AI model</source>
+        <translation>rascunho na hora refinado pelo modelo de IA</translation>
+    </message>
+    <message>
+        <source>instant translation only</source>
+        <translation>só a tradução instantânea</translation>
+    </message>
+    <message>
+        <source>your cloned voice</source>
+        <translation>a sua voz clonada</translation>
+    </message>
+    <message>
+        <source>a piper voice</source>
+        <translation>uma voz do piper</translation>
+    </message>
+    <message>
+        <source>Recommended for this computer (%1): %2.</source>
+        <translation>Recomendado para este computador (%1): %2.</translation>
+    </message>
+    <message>
+        <source>About %1 GB of video memory.</source>
+        <translation>Cerca de %1 GB de memória de vídeo.</translation>
+    </message>
+    <message>
+        <source>Everything runs on the processor.</source>
+        <translation>Tudo roda no processador.</translation>
+    </message>
+    <message>
+        <source>Use recommended</source>
+        <translation>Usar o recomendado</translation>
+    </message>
+    <message>
+        <source>Forget what you changed in this mode and use what suits this computer</source>
+        <translation>Esquecer o que você mudou neste modo e usar o que combina com este computador</translation>
+    </message>
+    <message>
+        <source>For this mode. Not downloaded yet: Live translation fetches it when the mode starts, or use “Download / set up” below.</source>
+        <translation>Para este modo. Ainda não baixado: a Tradução ao vivo baixa quando o modo começar, ou use “Baixar / configurar” abaixo.</translation>
+    </message>
+    <message>
+        <source>For this mode. Whisper, shared with the Assistant and transcription.</source>
+        <translation>Para este modo. Whisper, compartilhado com o Assistente e a transcrição.</translation>
+    </message>
+    <message>
+        <source>Voice for dubbing</source>
+        <translation>Voz da dublagem</translation>
+    </message>
+    <message>
+        <source>A cloned voice is not recommended on this computer: without room on a CUDA graphics card it is slow.</source>
+        <translation>Uma voz clonada não é recomendada neste computador: sem espaço numa placa de vídeo com CUDA, ela fica lenta.</translation>
+    </message>
+    <message>
+        <source>Dubbing uses piper voices, so the AI translator fits beside them.</source>
+        <translation>A dublagem usa vozes do piper, para o tradutor de IA caber ao lado delas.</translation>
+    </message>
+    <message>
+        <source>German</source>
+        <translation>Alemão</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation>Japonês</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation>Chinês</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation>Coreano</translation>
+    </message>
+    <message>
+        <source>They speak</source>
+        <translation>Eles falam</translation>
+    </message>
+    <message>
+        <source>I speak</source>
+        <translation>Eu falo</translation>
+    </message>
+    <message>
+        <source>They hear</source>
+        <translation>Eles ouvem</translation>
+    </message>
+    <message>
+        <source>Each mode remembers its own languages.</source>
+        <translation>Cada modo lembra os próprios idiomas.</translation>
+    </message>
+    <message>
+        <source>Subtitles</source>
+        <translation>Legendas</translation>
+    </message>
+    <message>
+        <source>Translated subtitles over the screen while the original audio keeps playing.</source>
+        <translation>Legendas traduzidas sobre a tela enquanto o áudio original continua tocando.</translation>
+    </message>
+    <message>
+        <source>Dubbed</source>
+        <translation>Dublado</translation>
+    </message>
+    <message>
+        <source>A voice reads the translation and the original audio is lowered while it speaks.</source>
+        <translation>Uma voz lê a tradução e o áudio original fica mais baixo enquanto ela fala.</translation>
+    </message>
+    <message>
+        <source>Speak</source>
+        <translation>Falar</translation>
+    </message>
+    <message>
+        <source>Translates what you say into the microphone and speaks it out loud.</source>
+        <translation>Traduz o que você diz no microfone e fala em voz alta.</translation>
+    </message>
+    <message>
+        <source>Call</source>
+        <translation>Chamada</translation>
+    </message>
+    <message>
+        <source>Both ways in a call: subtitles for the other person, your translated voice for them.</source>
+        <translation>Nos dois sentidos numa chamada: legendas do que a outra pessoa diz e a sua voz traduzida para ela.</translation>
+    </message>
+    <message>
+        <source>System audio</source>
+        <translation>Áudio do sistema</translation>
+    </message>
+    <message>
+        <source>One app</source>
+        <translation>Um app</translation>
+    </message>
+    <message>
+        <source>Microphone</source>
+        <translation>Microfone</translation>
+    </message>
+    <message>
+        <source>Detect automatically</source>
+        <translation>Detectar automaticamente</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>Inglês</translation>
+    </message>
+    <message>
+        <source>Portuguese</source>
+        <translation>Português</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation>Espanhol</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>Francês</translation>
+    </message>
+    <message>
+        <source>Italian</source>
+        <translation>Italiano</translation>
+    </message>
+    <message>
+        <source>Base (fastest, less accurate)</source>
+        <translation>Base (mais rápido, menos preciso)</translation>
+    </message>
+    <message>
+        <source>Small</source>
+        <translation>Small</translation>
+    </message>
+    <message>
+        <source>Live translation</source>
+        <translation>Tradução ao vivo</translation>
+    </message>
+    <message>
+        <source>Open Live translation</source>
+        <translation>Abrir Tradução ao vivo</translation>
+    </message>
+    <message>
+        <source>Install lingmo-translate to use it.</source>
+        <translation>Instale o lingmo-translate para usar.</translation>
+    </message>
+    <message>
+        <source>Hear videos, calls and meetings in your language, with subtitles or a translated voice. Meta+Shift+T starts/stops live translation.</source>
+        <translation>Ouça vídeos, chamadas e reuniões no seu idioma, com legendas ou uma voz traduzida. Meta+Shift+T inicia/para a tradução ao vivo.</translation>
+    </message>
+    <message>
+        <source>Live translation is not installed</source>
+        <translation>A Tradução ao vivo não está instalada</translation>
+    </message>
+    <message>
+        <source>Install the “lingmo-translate” package. These settings are kept and used once it is installed.</source>
+        <translation>Instale o pacote “lingmo-translate”. Estas configurações ficam guardadas e passam a valer quando ele for instalado.</translation>
+    </message>
+    <message>
+        <source>Translate from</source>
+        <translation>Traduzir de</translation>
+    </message>
+    <message>
+        <source>Translate to</source>
+        <translation>Traduzir para</translation>
+    </message>
+    <message>
+        <source>Listen to</source>
+        <translation>Ouvir</translation>
+    </message>
+    <message>
+        <source>Only this app is translated: type its name as it shows in the volume mixer.</source>
+        <translation>Só este app é traduzido: digite o nome como aparece no mixer de volume.</translation>
+    </message>
+    <message>
+        <source>App name, e.g. Firefox</source>
+        <translation>Nome do app, por exemplo Firefox</translation>
+    </message>
+    <message>
+        <source>Translation</source>
+        <translation>Tradução</translation>
+    </message>
+    <message>
+        <source>Fastest: Opus-MT only, about 60 ms per sentence. Good for following along, a bit literal.</source>
+        <translation>Mais rápida: só o Opus-MT, cerca de 60 ms por frase. Boa para acompanhar, um pouco literal.</translation>
+    </message>
+    <message>
+        <source>Best quality: Opus-MT shows a draft instantly and the local AI model refines it, about 1.1 s more per sentence.</source>
+        <translation>Melhor qualidade: o Opus-MT mostra um rascunho na hora e o modelo de IA local o refina, cerca de 1,1 s a mais por frase.</translation>
+    </message>
+    <message>
+        <source>Best quality</source>
+        <translation>Melhor qualidade</translation>
+    </message>
+    <message>
+        <source>Fastest</source>
+        <translation>Mais rápida</translation>
+    </message>
+    <message>
+        <source>AI model that refines the translation</source>
+        <translation>Modelo de IA que refina a tradução</translation>
+    </message>
+    <message>
+        <source>%1 is not downloaded: download it above or pick another model.</source>
+        <translation>%1 não está baixado: baixe-o acima ou escolha outro modelo.</translation>
+    </message>
+    <message>
+        <source>Ollama is not running: only the instant draft is shown.</source>
+        <translation>O Ollama não está em execução: só o rascunho instantâneo é mostrado.</translation>
+    </message>
+    <message>
+        <source>Everything runs on this computer: no audio, text or voice is uploaded.</source>
+        <translation>Tudo roda neste computador: nenhum áudio, texto ou voz é enviado.</translation>
+    </message>
+    <message>
+        <source>Subtitles and speech recognition</source>
+        <translation>Legendas e reconhecimento de fala</translation>
+    </message>
+    <message>
+        <source>Show the original text</source>
+        <translation>Mostrar o texto original</translation>
+    </message>
+    <message>
+        <source>A smaller line with what was said, above the translation.</source>
+        <translation>Uma linha menor com o que foi dito, acima da tradução.</translation>
+    </message>
+    <message>
+        <source>Subtitle size</source>
+        <translation>Tamanho da legenda</translation>
+    </message>
+    <message>
+        <source>Recognition model</source>
+        <translation>Modelo de reconhecimento</translation>
+    </message>
+    <message>
+        <source>not downloaded</source>
+        <translation>não baixado</translation>
+    </message>
+    <message>
+        <source>Pause before a sentence is finished</source>
+        <translation>Pausa para considerar a frase terminada</translation>
+    </message>
+    <message>
+        <source>Lower is faster, but may cut sentences in the middle.</source>
+        <translation>Menor é mais rápido, mas pode cortar frases no meio.</translation>
+    </message>
+    <message>
+        <source>%1 ms</source>
+        <translation>%1 ms</translation>
+    </message>
+    <message>
+        <source>Show timings</source>
+        <translation>Mostrar tempos</translation>
+    </message>
+    <message>
+        <source>A panel in the app with how long each step takes (recognition, translation, voice).</source>
+        <translation>Um painel no app com quanto tempo cada etapa leva (reconhecimento, tradução, voz).</translation>
+    </message>
+    <message>
+        <source>Translated voice</source>
+        <translation>Voz traduzida</translation>
+    </message>
+    <message>
+        <source>Used in the Dubbed, Speak and Call modes.</source>
+        <translation>Usada nos modos Dublado, Falar e Chamada.</translation>
+    </message>
+    <message>
+        <source>Voice</source>
+        <translation>Voz</translation>
+    </message>
+    <message>
+        <source>This voice is not on this computer anymore: choose another one.</source>
+        <translation>Esta voz não está mais neste computador: escolha outra.</translation>
+    </message>
+    <message>
+        <source>Voice licence: %1</source>
+        <translation>Licença da voz: %1</translation>
+    </message>
+    <message>
+        <source>Being prepared: the first sentence takes longer.</source>
+        <translation>Em preparo: a primeira frase demora mais.</translation>
+    </message>
+    <message>
+        <source>Cloned voice</source>
+        <translation>Voz clonada</translation>
+    </message>
+    <message>
+        <source>Fastest: one take per sentence.</source>
+        <translation>Mais rápida: uma tentativa por frase.</translation>
+    </message>
+    <message>
+        <source>Best quality: up to 3 takes per sentence, keeping the one with the most natural speed.</source>
+        <translation>Melhor qualidade: até 3 tentativas por frase, fica a de velocidade mais natural.</translation>
+    </message>
+    <message>
+        <source>Original audio while the voice speaks</source>
+        <translation>Áudio original enquanto a voz fala</translation>
+    </message>
+    <message>
+        <source>How loud the original stays under the translated voice.</source>
+        <translation>O volume do original por baixo da voz traduzida.</translation>
+    </message>
+    <message>
+        <source>Your voice profiles</source>
+        <translation>Seus perfis de voz</translation>
+    </message>
+    <message>
+        <source>Speak in the translated language with your own voice. Only clone your own voice.</source>
+        <translation>Fale no idioma traduzido com a sua própria voz. Clone apenas a sua própria voz.</translation>
+    </message>
+    <message>
+        <source>Record new profile</source>
+        <translation>Gravar novo perfil</translation>
+    </message>
+    <message>
+        <source>Install lingmo-translate to record a voice.</source>
+        <translation>Instale o lingmo-translate para gravar uma voz.</translation>
+    </message>
+    <message>
+        <source>No voice profile yet. Recording takes about a minute of reading aloud.</source>
+        <translation>Nenhum perfil de voz ainda. A gravação leva cerca de um minuto lendo em voz alta.</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>Pronto</translation>
+    </message>
+    <message>
+        <source>Not ready</source>
+        <translation>Não pronto</translation>
+    </message>
+    <message>
+        <source>In use</source>
+        <translation>Em uso</translation>
+    </message>
+    <message>
+        <source>Recorded %1</source>
+        <translation>Gravado em %1</translation>
+    </message>
+    <message>
+        <source>prepared on first use</source>
+        <translation>preparado no primeiro uso</translation>
+    </message>
+    <message>
+        <source>Re-record</source>
+        <translation>Regravar</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>Apagar</translation>
+    </message>
+    <message>
+        <source>Translation models</source>
+        <translation>Modelos de tradução</translation>
+    </message>
+    <message>
+        <source>%1 on disk. Removed models can be downloaded again.</source>
+        <translation>%1 no disco. Modelos removidos podem ser baixados de novo.</translation>
+    </message>
+    <message>
+        <source>Downloaded the first time you use Live translation.</source>
+        <translation>Baixados na primeira vez que você usar a Tradução ao vivo.</translation>
+    </message>
+    <message>
+        <source>Download / set up</source>
+        <translation>Baixar / configurar</translation>
+    </message>
+    <message>
+        <source>Install lingmo-translate to download the models.</source>
+        <translation>Instale o lingmo-translate para baixar os modelos.</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
+        <source>Licences</source>
+        <translation>Licenças</translation>
+    </message>
+    <message>
+        <source>Whisper (speech recognition): MIT</source>
+        <translation>Whisper (reconhecimento de fala): MIT</translation>
+    </message>
+    <message>
+        <source>Opus-MT (translation): CC-BY 4.0, Helsinki-NLP / University of Helsinki</source>
+        <translation>Opus-MT (tradução): CC-BY 4.0, Helsinki-NLP / Universidade de Helsinque</translation>
+    </message>
+    <message>
+        <source>Silero VAD (speech detection): MIT</source>
+        <translation>Silero VAD (detecção de fala): MIT</translation>
+    </message>
+    <message>
+        <source>Piper (voices): engine MIT; each voice has its own licence, shown with the voice</source>
+        <translation>Piper (vozes): motor MIT; cada voz tem a sua própria licença, mostrada junto com a voz</translation>
+    </message>
+    <message>
+        <source>Chatterbox (cloned voice): MIT</source>
+        <translation>Chatterbox (voz clonada): MIT</translation>
+    </message>
+    <message>
+        <source>qwen3.5 (refines the translation): Apache-2.0</source>
+        <translation>qwen3.5 (refina a tradução): Apache-2.0</translation>
+    </message>
+    <message>
+        <source>Delete the voice profile %1?</source>
+        <translation>Apagar o perfil de voz %1?</translation>
+    </message>
+    <message>
+        <source>Remove %1?</source>
+        <translation>Remover %1?</translation>
+    </message>
+    <message>
+        <source>The recording and everything prepared from it are deleted from this computer. This cannot be undone.</source>
+        <translation>A gravação e tudo o que foi preparado a partir dela são apagados deste computador. Não dá para desfazer.</translation>
+    </message>
+    <message>
+        <source>This Whisper model is shared: the Assistant and transcription in Lingmo Studio may use it too. You can download it again later.</source>
+        <translation>Este modelo do Whisper é compartilhado: o Assistente e a transcrição do Lingmo Studio também podem usá-lo. Você pode baixá-lo de novo depois.</translation>
+    </message>
+    <message>
+        <source>It frees up disk space. You can download it again later.</source>
+        <translation>Libera espaço em disco. Você pode baixá-lo de novo depois.</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+</context>
+<context>
+    <name>TranslateModule</name>
+    <message>
+        <source>Could not save %1.</source>
+        <translation>Não foi possível salvar %1.</translation>
+    </message>
+    <message>
+        <source>Piper: %1</source>
+        <translation>Piper: %1</translation>
+    </message>
+    <message>
+        <source>eSpeak NG (robotic)</source>
+        <translation>eSpeak NG (robótica)</translation>
+    </message>
+    <message>
+        <source>%1 s</source>
+        <translation>%1 s</translation>
+    </message>
+    <message>
+        <source>Your voice: %1</source>
+        <translation>Sua voz: %1</translation>
+    </message>
+    <message>
+        <source>Your voice: %1 (not ready)</source>
+        <translation>Sua voz: %1 (não pronta)</translation>
+    </message>
+    <message>
+        <source>%1 (not found)</source>
+        <translation>%1 (não encontrada)</translation>
+    </message>
+    <message>
+        <source>Speech recognition (Whisper) · shared with the Assistant and Lingmo Studio</source>
+        <translation>Reconhecimento de fala (Whisper) · compartilhado com o Assistente e o Lingmo Studio</translation>
+    </message>
+    <message>
+        <source>Translation (Opus-MT)</source>
+        <translation>Tradução (Opus-MT)</translation>
+    </message>
+    <message>
+        <source>Speech detection</source>
+        <translation>Detecção de fala</translation>
+    </message>
+    <message>
+        <source>Speech engine</source>
+        <translation>Motor de fala</translation>
+    </message>
+    <message>
+        <source>Python environment with Chatterbox (cloned voice) and the translation runtime</source>
+        <translation>Ambiente Python com o Chatterbox (voz clonada) e o motor de tradução</translation>
+    </message>
+    <message>
+        <source>Could not open Live translation.</source>
+        <translation>Não foi possível abrir a Tradução ao vivo.</translation>
+    </message>
+    <message>
+        <source>Could not remove the voice profile %1.</source>
+        <translation>Não foi possível remover o perfil de voz %1.</translation>
+    </message>
+    <message>
+        <source>Could not remove %1.</source>
+        <translation>Não foi possível remover %1.</translation>
+    </message>
+</context>
+<context>
+    <name>OcrLanguages</name>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 script</source>
+        <translation>Escrita %1</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Math equations</source>
+        <translation>Equações matemáticas</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Script detection</source>
+        <translation>Detecção de escrita</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (Fraktur)</source>
+        <translation>%1 (Fraktur)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (traditional)</source>
+        <translation>%1 (tradicional)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (simplified)</source>
+        <translation>%1 (simplificado)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1, vertical</source>
+        <translation>%1, vertical</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (vertical)</source>
+        <translation>%1 (vertical)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (old)</source>
+        <translation>%1 (antigo)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (Cyrillic)</source>
+        <translation>%1 (cirílico)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%1 (Latin)</source>
+        <translation>%1 (latino)</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Waiting for authorization…</source>
+        <translation>Aguardando autorização…</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Installing %1 (%2 of %3)…</source>
+        <translation>Instalando %1 (%2 de %3)…</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Removing %1 (%2 of %3)…</source>
+        <translation>Removendo %1 (%2 de %3)…</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Downloading…</source>
+        <translation>Baixando…</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Installing…</source>
+        <translation>Instalando…</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Removing…</source>
+        <translation>Removendo…</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%n reading language(s) installed.</source>
+        <translation>
+            <numerusform>%n idioma de leitura instalado.</numerusform>
+            <numerusform>%n idiomas de leitura instalados.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>%n reading language(s) removed.</source>
+        <translation>
+            <numerusform>%n idioma de leitura removido.</numerusform>
+            <numerusform>%n idiomas de leitura removidos.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>The change was cancelled.</source>
+        <translation>A alteração foi cancelada.</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>This language is needed by the system and can't be removed.</source>
+        <translation>Este idioma é necessário para o sistema e não pode ser removido.</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>Another installation is running. Try again when it finishes.</source>
+        <translation>Outra instalação está em andamento. Tente de novo quando ela terminar.</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>The reading languages could not be installed. Check the internet connection.</source>
+        <translation>Não foi possível instalar os idiomas de leitura. Verifique a conexão com a internet.</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>The reading languages could not be removed.</source>
+        <translation>Não foi possível remover os idiomas de leitura.</translation>
+    </message>
+    <message>
+        <location filename="../src/ocrlanguages.cpp" line="0"/>
+        <source>The reading languages tool is missing. Reinstall lingmo-screenshots.</source>
+        <translation>A ferramenta de idiomas de leitura não foi encontrada. Reinstale o lingmo-screenshots.</translation>
+    </message>
+</context>
+<context>
+    <name>OcrLanguagesView</name>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Back to Language</source>
+        <translation>Voltar para Idioma</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Reading languages (OCR)</source>
+        <translation>Idiomas de leitura (OCR)</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>The languages Screenshots can read in an image (Copy text, Ask about the screen). The script of the text is detected on its own: install the languages you come across. Everything is read on this computer.</source>
+        <translation>Os idiomas que a Captura de tela consegue ler numa imagem (Copiar texto, Perguntar sobre a tela). A escrita do texto é detectada sozinha: instale os idiomas que você encontra. Tudo é lido neste computador.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Screenshots is not installed</source>
+        <translation>A Captura de tela não está instalada</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Reading languages are managed by Lingmo Screenshots. Install it from the Store.</source>
+        <translation>Os idiomas de leitura são gerenciados pela Captura de tela do Lingmo. Instale-a pela Loja.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Search languages</source>
+        <translation>Buscar idiomas</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Most used</source>
+        <translation>Mais usados</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>All languages</source>
+        <translation>Todos os idiomas</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>No language matches “%1”.</source>
+        <translation>Nenhum idioma corresponde a “%1”.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>The language list is not available. Check the internet connection and the package database.</source>
+        <translation>A lista de idiomas não está disponível. Verifique a conexão com a internet e a base de pacotes.</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>recommended</source>
+        <translation>recomendado</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Installed · needed by the system</source>
+        <translation>Instalado · necessário para o sistema</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Will be removed</source>
+        <translation>Será removido</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Installed</source>
+        <translation>Instalado</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Will be installed</source>
+        <translation>Será instalado</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Not installed</source>
+        <translation>Não instalado</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Select the languages to install or remove.</source>
+        <translation>Selecione os idiomas para instalar ou remover.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>%n to install (%1)</source>
+        <translation>
+            <numerusform>%n para instalar (%1)</numerusform>
+            <numerusform>%n para instalar (%1)</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>%n to remove</source>
+        <translation>
+            <numerusform>%n para remover</numerusform>
+            <numerusform>%n para remover</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Remove</source>
+        <translation>Remover</translation>
+    </message>
+    <message>
+        <location filename="../src/qml/OcrLanguagesView.qml" line="0"/>
+        <source>Install selected</source>
+        <translation>Instalar selecionados</translation>
+    </message>
+</context>
+<context>
+    <name>HelpPage</name>
+    <message>
+        <source>Help &amp; tips</source>
+        <translation>Ajuda e dicas</translation>
+    </message>
+    <message>
+        <source>File actions</source>
+        <translation>Ações de arquivo</translation>
+    </message>
+    <message>
+        <source>Wheel for the selected files</source>
+        <translation>Roda para os arquivos selecionados</translation>
+    </message>
+    <message>
+        <source>Convert, compress and act on files without opening any app.</source>
+        <translation>Converta, comprima e faça ações em arquivos sem abrir nenhum app.</translation>
+    </message>
+    <message>
+        <source>Start dragging a file and, without letting go, tap Shift (convert), Ctrl (tools) or Alt (actions). Drop it on a slice; drop it in the middle to cancel.</source>
+        <translation>Comece a arrastar um arquivo e, sem soltar, dê um toque em Shift (converter), Ctrl (ferramentas) ou Alt (ações). Solte numa fatia; solte no centro para cancelar.</translation>
+    </message>
+    <message>
+        <source>In the file manager: right-click › Convert… or File actions…</source>
+        <translation>No gerenciador de arquivos: clique direito › Converter… ou Ações de arquivo…</translation>
+    </message>
+    <message>
+        <source>The result is saved next to the original, which is never changed.</source>
+        <translation>O resultado fica ao lado do original, que nunca é alterado.</translation>
+    </message>
+    <message>
+        <source>Live translation</source>
+        <translation>Tradução ao vivo</translation>
+    </message>
+    <message>
+        <source>Start or stop, in the last mode</source>
+        <translation>Liga ou desliga, no último modo usado</translation>
+    </message>
+    <message>
+        <source>Subtitles and dubbing for videos and calls, and your own speech translated, all on this computer.</source>
+        <translation>Legendas e dublagem para vídeos e chamadas, e a sua fala traduzida, tudo neste computador.</translation>
+    </message>
+    <message>
+        <source>Modes: Subtitles, Listen dubbed, Speak translated and Call. Each mode keeps its own languages.</source>
+        <translation>Modos: Legendas, Ouvir dublado, Falar traduzido e Chamada. Cada modo guarda os seus idiomas.</translation>
+    </message>
+    <message>
+        <source>In OBS, Meet, Teams or Discord, pick the microphone &quot;Lingmo Tradutor&quot; to send the translated voice.</source>
+        <translation>No OBS, Meet, Teams ou Discord, escolha o microfone &quot;Lingmo Tradutor&quot; para enviar a voz traduzida.</translation>
+    </message>
+    <message>
+        <source>The Island card changes the mode and the languages while it runs; it turns green when you can talk.</source>
+        <translation>O cartão da Ilha troca o modo e os idiomas enquanto roda, e fica verde quando você pode falar.</translation>
+    </message>
+    <message>
+        <source>Dictation</source>
+        <translation>Ditado</translation>
+    </message>
+    <message>
+        <source>Start or stop dictating</source>
+        <translation>Começa ou para o ditado</translation>
+    </message>
+    <message>
+        <source>Type by speaking, in any text field.</source>
+        <translation>Digite falando, em qualquer campo de texto.</translation>
+    </message>
+    <message>
+        <source>The text appears while you speak and is typed at each pause.</source>
+        <translation>O texto aparece enquanto você fala e é digitado a cada pausa.</translation>
+    </message>
+    <message>
+        <source>Say &quot;vírgula&quot;, &quot;ponto&quot;, &quot;nova linha&quot; or &quot;apagar última palavra&quot;.</source>
+        <translation>Diga &quot;vírgula&quot;, &quot;ponto&quot;, &quot;nova linha&quot; ou &quot;apagar última palavra&quot;.</translation>
+    </message>
+    <message>
+        <source>Voice Studio</source>
+        <translation>Estúdio de Voz</translation>
+    </message>
+    <message>
+        <source>Create and clone voices, read texts aloud and export audio.</source>
+        <translation>Crie e clone vozes, leia textos em voz alta e exporte áudio.</translation>
+    </message>
+    <message>
+        <source>Engines › Find the best configuration: picks the best settings for your graphics card.</source>
+        <translation>Motores › Buscar melhor configuração: escolhe os melhores ajustes para a sua placa de vídeo.</translation>
+    </message>
+    <message>
+        <source>The engine for cloned voices is chosen in Settings › AI › Cloned voice.</source>
+        <translation>O motor das vozes clonadas é escolhido em Configurações › IA › Voz clonada.</translation>
+    </message>
+    <message>
+        <source>Ask about the screen</source>
+        <translation>Perguntar sobre a tela</translation>
+    </message>
+    <message>
+        <source>Circle anything and ask</source>
+        <translation>Circule qualquer coisa e pergunte</translation>
+    </message>
+    <message>
+        <source>Screenshot</source>
+        <translation>Captura de tela</translation>
+    </message>
+    <message>
+        <source>All screens</source>
+        <translation>Todas as telas</translation>
+    </message>
+    <message>
+        <source>Record the screen</source>
+        <translation>Gravar a tela</translation>
+    </message>
+    <message>
+        <source>Screenshots, recordings, and questions to the local AI about what is on the screen.</source>
+        <translation>Capturas, gravações e perguntas à IA local sobre o que está na tela.</translation>
+    </message>
+    <message>
+        <source>Reads text in images in any language; it offers to install the reading of a new language when needed.</source>
+        <translation>Lê texto em imagens em qualquer idioma e oferece instalar a leitura de um idioma novo quando precisa.</translation>
+    </message>
+    <message>
+        <source>Assistant</source>
+        <translation>Assistente</translation>
+    </message>
+    <message>
+        <source>Open the Assistant</source>
+        <translation>Abrir o Assistente</translation>
+    </message>
+    <message>
+        <source>Ask by voice</source>
+        <translation>Perguntar por voz</translation>
+    </message>
+    <message>
+        <source>An AI that runs on your computer: answers, flows and actions in the apps.</source>
+        <translation>Uma IA que roda no seu computador: respostas, fluxos e ações nos apps.</translation>
+    </message>
+    <message>
+        <source>It can use the apps&apos; actions: convert a file, translate, read a document aloud…</source>
+        <translation>Ela usa as ações dos apps: converter um arquivo, traduzir, ler um documento em voz alta…</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Busca</translation>
+    </message>
+    <message>
+        <source>Search apps, files and actions</source>
+        <translation>Buscar apps, arquivos e ações</translation>
+    </message>
+    <message>
+        <source>Clipboard history</source>
+        <translation>Histórico da área de transferência</translation>
+    </message>
+    <message>
+        <source>Find anything and run app actions from one place.</source>
+        <translation>Encontre qualquer coisa e rode ações dos apps num lugar só.</translation>
+    </message>
+    <message>
+        <source>Reader</source>
+        <translation>Leitor</translation>
+    </message>
+    <message>
+        <source>PDF, EPUB, DOCX and ODT, read aloud with the words highlighted.</source>
+        <translation>PDF, EPUB, DOCX e ODT, lidos em voz alta com as palavras destacadas.</translation>
+    </message>
+    <message>
+        <source>Listen: the voice reads from the sentence you click.</source>
+        <translation>Ouvir: a voz lê a partir da frase em que você clicar.</translation>
+    </message>
+    <message>
+        <source>Learning mode: click a word to translate it, and slow the reading down.</source>
+        <translation>Modo aprender: clique numa palavra para traduzir e deixe a leitura mais lenta.</translation>
+    </message>
+    <message>
+        <source>Lingmo Tutor</source>
+        <translation>Lingmo Tutor</translation>
+    </message>
+    <message>
+        <source>Learn by asking: by voice, text, photo or PDF, and practise languages.</source>
+        <translation>Aprenda perguntando, por voz, texto, foto ou PDF, e pratique idiomas.</translation>
+    </message>
+    <message>
+        <source>It teaches with questions and hints; the parents&apos; mode has a PIN.</source>
+        <translation>Ele ensina com perguntas e dicas; o modo dos pais tem PIN.</translation>
+    </message>
+    <message>
+        <source>Lingmo Studio</source>
+        <translation>Lingmo Studio</translation>
+    </message>
+    <message>
+        <source>Video editor with Shorts and Reels cuts, captions and dubbing.</source>
+        <translation>Editor de vídeo com cortes para Shorts e Reels, legendas e dublagem.</translation>
+    </message>
+    <message>
+        <source>Podcast dubbing</source>
+        <translation>Dublador de Podcasts</translation>
+    </message>
+    <message>
+        <source>Dubs podcasts and interviews keeping each speaker&apos;s voice.</source>
+        <translation>Dubla podcasts e entrevistas mantendo a voz de cada pessoa.</translation>
+    </message>
+    <message>
+        <source>Desktop</source>
+        <translation>Área de trabalho</translation>
+    </message>
+    <message>
+        <source>Open the launcher (tap the key)</source>
+        <translation>Abrir o lançador (toque na tecla)</translation>
+    </message>
+    <message>
+        <source>Lock the screen</source>
+        <translation>Bloquear a tela</translation>
+    </message>
+    <message>
+        <source>Reload the desktop when something looks wrong</source>
+        <translation>Recarregar a área de trabalho quando algo parecer errado</translation>
+    </message>
+    <message>
+        <source>Every shortcut can be changed in Settings › Shortcuts.</source>
+        <translation>Todos os atalhos podem ser trocados em Configurações › Atalhos.</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Abrir</translation>
     </message>
 </context>
 </TS>

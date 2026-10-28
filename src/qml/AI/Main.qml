@@ -223,7 +223,9 @@ ItemPage {
             if (typeof rootWindow === "undefined" || page.StackView.status !== StackView.Active)
                 return
             const target = rootWindow.pageSection === "transcription" ? transcriptionCard
-                         : rootWindow.pageSection === "intents" ? appActionsCard : null
+                         : rootWindow.pageSection === "intents" ? appActionsCard
+                         : rootWindow.pageSection === "translation" ? translationSection
+                         : rootWindow.pageSection === "voice" ? clonedVoiceCard : null
             if (!target)
                 return
             rootWindow.pageSection = ""
@@ -1810,6 +1812,20 @@ ItemPage {
                         onClicked: page.showAllWhisper = !page.showAllWhisper
                     }
                 }
+            }
+
+            // ---------------------------------------------------------- Live translation
+            // lingmo-translate: ~/.config/lingmo/translate.conf, voice profiles and models
+            LiveTranslation {
+                id: translationSection
+                Layout.fillWidth: true
+            }
+
+            // ---------------------------------------------------------- Cloned voice
+            // the engine of every app's cloned voice: ~/.config/lingmoos/voice.conf
+            ClonedVoice {
+                id: clonedVoiceCard
+                Layout.fillWidth: true
             }
 
             // ---------------------------------------------------------- Where it is used

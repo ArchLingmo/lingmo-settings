@@ -387,7 +387,7 @@ LingmoUI.SettingsSideBar {
             title: qsTr("Artificial Intelligence")
             name: "ai"
             // Extra words the search field matches (comma separated)
-            keywords: qsTr("AI, assistant, model, LLM, chat, whisper, subtitles, transcription")
+            keywords: qsTr("AI, assistant, model, LLM, chat, whisper, subtitles, transcription, translate, live translation, translator, dubbing, cloned voice")
             page: "qrc:/qml/AI/Main.qml"
             iconSource: "ai.svg"
             iconColor: "#6E56CF"
@@ -437,6 +437,17 @@ LingmoUI.SettingsSideBar {
         //     iconSource: "update.svg"
         //     category: qsTr("System & Update")
         // }
+
+        ListElement {
+            title: qsTr("Help & tips")
+            name: "help"
+            // Extra words the search field matches (comma separated)
+            keywords: qsTr("help, how to, tips, shortcuts, gestures, apps")
+            page: "qrc:/qml/Help/Main.qml"
+            iconSource: "info.svg"
+            iconColor: "#0A84FF"
+            category: qsTr("System & Update")
+        }
 
         ListElement {
             title: qsTr("About")

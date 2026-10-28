@@ -3,6 +3,8 @@
         <file>qml/main.qml</file>
         <file>qml/SideBar.qml</file>
         <file>qml/AI/Main.qml</file>
+        <file>qml/AI/LiveTranslation.qml</file>
+        <file>qml/AI/ClonedVoice.qml</file>
         <file>qml/Boxes/Main.qml</file>
         <file>qml/Continuity/ContinuityPage.qml</file>
         <file>qml/Continuity/ContinuityLayout.qml</file>
@@ -51,6 +53,7 @@
         <file>qml/HorizontalDivider.qml</file>
         <file>qml/Horizontalabt.qml</file>
         <file>qml/LanguagePage.qml</file>
+        <file>qml/OcrLanguagesView.qml</file>
         <file>images/checked.svg</file>
         <file>images/light/network-wired.svg</file>
         <file>images/light/network-wireless-connected-00.svg</file>
@@ -110,6 +113,7 @@
         <file>images/light/checked.svg</file>
         <file>images/dark/checked.svg</file>
         <file>qml/About/Main.qml</file>
+        <file>qml/Help/Main.qml</file>
         <file>qml/User/Main.qml</file>
         <file>qml/User/FingerprintSection.qml</file>
         <file>qml/User/FingerprintEnrollDialog.qml</file>

@@ -19,6 +19,7 @@
 #include "about.h"
 #include "accessibility.h"
 #include "shortcuts.h"
+#include "helpapps.h"
 #include "autostart.h"
 #include "effects.h"
 #include "nightlight.h"
@@ -40,6 +41,7 @@
 #include "fontsmodel.h"
 #include "hostname.h"
 #include "language.h"
+#include "ocrlanguages.h"
 #include "networkproxy.h"
 #include "notifications.h"
 #include "password.h"
@@ -47,6 +49,8 @@
 #include "settingsuiadaptor.h"
 #include "touchpad.h"
 #include "appactions.h"
+#include "translatemodule.h"
+#include "voiceenginemodule.h"
 #include "aimodule.h"
 #include "boxesmodule.h"
 #include "continuitymodule.h"
@@ -75,6 +79,7 @@ Application::Application(std::shared_ptr<QQmlApplicationEngine> engine)
     const char* uri = "Lingmo.Settings";
     // @uri Lingmo.Settings
     qmlRegisterType<Appearance>(uri, 1, 0, "Appearance");
+    qmlRegisterType<HelpApps>(uri, 1, 0, "HelpApps");
     qmlRegisterType<FontsModel>(uri, 1, 0, "FontsModel");
     qmlRegisterType<Brightness>(uri, 1, 0, "Brightness");
     qmlRegisterType<Battery>(uri, 1, 0, "Battery");
@@ -110,6 +115,18 @@ Application::Application(std::shared_ptr<QQmlApplicationEngine> engine)
     // Settings › IA › "Ações dos apps" (Lingmo Intents)
     qmlRegisterSingletonType<AppActions>(uri, 1, 0, "AppActions", [](QQmlEngine*, QJSEngine*) -> QObject* {
         return new AppActions();
+    });
+    // Settings › IA › "Live translation": translate.conf, voice profiles and models of lingmo-translate
+    qmlRegisterSingletonType<TranslateModule>(uri, 1, 0, "TranslateModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
+        return new TranslateModule();
+    });
+    // Settings › IA › "Cloned voice": the system-wide engine (~/.config/lingmoos/voice.conf)
+    qmlRegisterSingletonType<VoiceEngineModule>(uri, 1, 0, "VoiceEngineModule", [](QQmlEngine*, QJSEngine*) -> QObject* {
+        return new VoiceEngineModule();
+    });
+    // Language › Reading languages (OCR packs): one instance, so an install survives page changes
+    qmlRegisterSingletonType<OcrLanguages>(uri, 1, 0, "OcrLanguages", [](QQmlEngine*, QJSEngine*) -> QObject* {
+        return new OcrLanguages();
     });
     // One instance: recreating a Linux box takes a while and survives page changes
     qmlRegisterSingletonType<BoxesModule>(uri, 1, 0, "BoxesModule", [](QQmlEngine*, QJSEngine*) -> QObject* {

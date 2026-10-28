@@ -9,14 +9,43 @@ import LingmoUI.CompatibleModule 3.0 as LingmoUI
 import Lingmo.Settings 1.0 as Settings
 
 ItemPage {
+    id: languagePage
     headerTitle: qsTr("Language")
+
+    // "lingmo-settings -m language/ocr" opens the reading languages directly
+    property bool showOcr: false
 
     Settings.Language {
         id: language
     }
 
-    ColumnLayout {
+    function takeSection() {
+        // Pages can be pushed twice in a row on start; only the shown one takes the section
+        if (typeof rootWindow === "undefined" || rootWindow.pageSection !== "ocr"
+                || languagePage.StackView.status !== StackView.Active)
+            return
+        rootWindow.pageSection = ""
+        showOcr = true
+    }
+
+    Timer {
+        id: sectionTimer
+        interval: 150
+        onTriggered: languagePage.takeSection()
+    }
+
+    Connections {
+        target: typeof rootWindow !== "undefined" ? rootWindow : null
+        function onPageSectionChanged() { sectionTimer.restart() }
+    }
+
+    Component.onCompleted: sectionTimer.start()
+
+    StackLayout {
         anchors.fill: parent
+        currentIndex: languagePage.showOcr ? 1 : 0
+
+    ColumnLayout {
         anchors.topMargin: LingmoUI.Units.smallSpacing
 
         LingmoUI.Banner {
@@ -119,6 +148,49 @@ ItemPage {
             }
         }
 
+        // Reading languages (OCR packs for Screenshots): its own view
+        LingmoUI.Card {
+            id: ocrCard
+            Layout.fillWidth: true
+            Layout.leftMargin: LingmoUI.Units.largeSpacing * 2
+            Layout.rightMargin: LingmoUI.Units.largeSpacing * 2
+            visible: Settings.OcrLanguages.available
+
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: ocrCard.padding
+                anchors.rightMargin: ocrCard.padding
+                anchors.topMargin: LingmoUI.Units.largeSpacing
+                anchors.bottomMargin: LingmoUI.Units.largeSpacing
+                spacing: LingmoUI.Units.largeSpacing
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: LingmoUI.Units.smallSpacing
+
+                    Label {
+                        text: qsTr("Reading languages (OCR)")
+                        font.pointSize: LingmoUI.Units.fontSubheading
+                        font.bold: true
+                        color: LingmoUI.Theme.textColor
+                    }
+                    Label {
+                        Layout.fillWidth: true
+                        wrapMode: Text.Wrap
+                        color: LingmoUI.Theme.secondaryTextColor
+                        font.pointSize: LingmoUI.Units.fontCaption
+                        text: qsTr("Languages Screenshots can read in images, such as Hebrew, Arabic or Chinese. Download only the ones you need.")
+                    }
+                }
+
+                LingmoUI.ActionButton {
+                    text: qsTr("Manage…")
+                    iconName: "preferences-desktop-locale"
+                    onClicked: languagePage.showOcr = true
+                }
+            }
+        }
+
         // Personal folders follow the language (lingmo-userdirs)
         LingmoUI.Card {
             id: foldersCard
@@ -172,6 +244,11 @@ ItemPage {
                     }
                 }
             }
+        }
+    }
+
+        OcrLanguagesView {
+            onBack: languagePage.showOcr = false
         }
     }
 
