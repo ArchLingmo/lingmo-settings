@@ -20,6 +20,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs
+import QtCore
 import Lingmo.Settings 1.0
 import Lingmo.Screen 1.0 as CS
 import LingmoUI.CompatibleModule 3.0 as LingmoUI
@@ -27,7 +29,11 @@ import LingmoUI.CompatibleModule 3.0 as LingmoUI
 import "../"
 
 ItemPage {
+    id: control
     headerTitle: qsTr("Display")
+
+    // Monitors scale one by one on Wayland; the X11 session has one global scale
+    readonly property bool wayland: Qt.platform.pluginName.startsWith("wayland")
 
     Appearance {
         id: appearance
@@ -415,6 +421,8 @@ ItemPage {
                                 id: mouseArea
                                 anchors.fill: parent
                                 cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+                                // The page would take the drag as a scroll
+                                preventStealing: true
                                 property point start
 
                                 onPressed: (mouse) => {
@@ -544,6 +552,114 @@ ItemPage {
                                     }
                                 }
 
+                                // Wayland: KWin scales each monitor on its own and apps draw
+                                // natively at that scale (fractional too), so text stays sharp
+                                Label {
+                                    text: qsTr("Scale")
+                                    visible: control.wayland
+                                }
+
+                                LingmoUI.SegmentedControl {
+                                    readonly property var scales: [1.0, 1.25, 1.5, 1.75, 2.0]
+                                    visible: control.wayland
+                                    Layout.fillWidth: true
+                                    fillWidth: true
+                                    model: ["100%", "125%", "150%", "175%", "200%"]
+                                    onCurrentIndexChanged: {
+                                        const value = scales[currentIndex]
+                                        if (visible && Math.abs(element.scale - value) > 0.01) {
+                                            element.scale = value
+                                            screen.save()
+                                        }
+                                    }
+                                    Binding on currentIndex {
+                                        value: {
+                                            for (let i = 0; i < 5; i++) {
+                                                if (element.scale <= [1.0, 1.25, 1.5, 1.75, 2.0][i] + 0.01)
+                                                    return i
+                                            }
+                                            return 4
+                                        }
+                                    }
+                                }
+
+                                // Wayland: KWin colour-manages each monitor; the monitor's own
+                                // colours (EDID) or a calibrated ICC file make them look alike
+                                Label {
+                                    text: qsTr("Color profile")
+                                    visible: profileColumn.visible
+                                }
+
+                                ColumnLayout {
+                                    id: profileColumn
+                                    visible: control.wayland && element.colorProfileSupport > 0
+                                    Layout.fillWidth: true
+                                    spacing: LingmoUI.Units.smallSpacing
+
+                                    ComboBox {
+                                        id: profileBox
+                                        Layout.fillWidth: true
+                                        leftPadding: LingmoUI.Units.largeSpacing
+                                        rightPadding: LingmoUI.Units.largeSpacing
+                                        topInset: 0
+                                        bottomInset: 0
+
+                                        // 0 sRGB, 2 the monitor's own, 1 an ICC file
+                                        readonly property var sources: {
+                                            var list = [0]
+                                            if (element.colorProfileSupport & 2)
+                                                list.push(2)
+                                            if (element.colorProfileSupport & 1)
+                                                list.push(1)
+                                            return list
+                                        }
+                                        model: sources.map(function (source) {
+                                            return source === 0 ? qsTr("Standard (sRGB)")
+                                                 : source === 2 ? qsTr("From the monitor (EDID)")
+                                                 : qsTr("ICC profile file…")
+                                        })
+
+                                        function follow() {
+                                            currentIndex = Qt.binding(function () {
+                                                return Math.max(0, sources.indexOf(element.colorProfileSource))
+                                            })
+                                        }
+                                        Component.onCompleted: follow()
+
+                                        onActivated: function (index) {
+                                            const source = sources[index]
+                                            if (source === 1) {
+                                                iccDialog.open()
+                                            } else {
+                                                element.colorProfileSource = source
+                                                screen.save()
+                                            }
+                                            follow()
+                                        }
+                                    }
+
+                                    Label {
+                                        Layout.fillWidth: true
+                                        visible: element.colorProfileSource === 1 && element.iccProfilePath !== ""
+                                        text: element.iccProfilePath.split("/").pop()
+                                        color: LingmoUI.Theme.secondaryTextColor
+                                        elide: Text.ElideMiddle
+                                    }
+
+                                    FileDialog {
+                                        id: iccDialog
+                                        title: qsTr("Choose an ICC profile")
+                                        // colord keeps the profiles it made from the monitors' EDID here
+                                        currentFolder: StandardPaths.writableLocation(StandardPaths.GenericDataLocation) + "/icc"
+                                        nameFilters: [qsTr("ICC profiles") + " (*.icc *.icm)", qsTr("All files") + " (*)"]
+                                        onAccepted: {
+                                            element.iccProfilePath = decodeURIComponent(selectedFile.toString().replace(/^file:\/\//, ""))
+                                            element.colorProfileSource = 1
+                                            screen.save()
+                                        }
+                                    }
+                                }
+
                                 Label {
                                     text: qsTr("Rotation")
                                 }
@@ -651,6 +767,8 @@ ItemPage {
             }
 
             RoundedItem {
+                visible: !control.wayland
+
                 Label {
                     text: qsTr("Scale")
                     font.pointSize: LingmoUI.Units.fontSubheading

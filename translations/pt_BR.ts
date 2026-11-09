@@ -1412,6 +1412,30 @@
         <translation>Mostrar a barra de status e a dock nesta tela</translation>
     </message>
     <message>
+        <source>Color profile</source>
+        <translation>Perfil de cor</translation>
+    </message>
+    <message>
+        <source>Standard (sRGB)</source>
+        <translation>Padrão (sRGB)</translation>
+    </message>
+    <message>
+        <source>From the monitor (EDID)</source>
+        <translation>Do próprio monitor (EDID)</translation>
+    </message>
+    <message>
+        <source>ICC profile file…</source>
+        <translation>Arquivo de perfil ICC…</translation>
+    </message>
+    <message>
+        <source>Choose an ICC profile</source>
+        <translation>Escolha um perfil ICC</translation>
+    </message>
+    <message>
+        <source>ICC profiles</source>
+        <translation>Perfis ICC</translation>
+    </message>
+    <message>
         <source>Scale</source>
         <translation>Escala</translation>
     </message>
