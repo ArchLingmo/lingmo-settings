@@ -28,6 +28,8 @@ find_package(Libcrypt REQUIRED)
 find_package(KF6NetworkManagerQt REQUIRED)
 find_package(KF6ModemManagerQt REQUIRED)
 find_package(KF6Config)
+# Default applications: every installed app (system, ~/.local, Flatpak) and mimeapps.list
+find_package(KF6Service REQUIRED)
 
 find_package(LingmoLogger REQUIRED)
 
@@ -70,6 +72,7 @@ target_link_libraries(${PROJECT_NAME}
         KF6::NetworkManagerQt
         KF6::ModemManagerQt
         KF6::ConfigCore
+        KF6::Service
 
         PkgConfig::FontConfig
         ${FREETYPE_LIBRARIES}

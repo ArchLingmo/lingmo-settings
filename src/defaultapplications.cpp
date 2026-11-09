@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 - 2022 LingmoOS Team.
+ * Copyright (C) 2021 - 2026 LingmoOS Team.
  *
  * Author:     Kate Leet <kate@lingmoos.com>
  *
@@ -18,238 +18,149 @@
  */
 
 #include "defaultapplications.h"
-#include "desktopproperties.h"
 
 #include <QSettings>
-#include <QStandardPaths>
-#include <QDirIterator>
-#include <QDir>
-#include <QDebug>
+#include <QVariantMap>
 
-#include <KConfig>
-#include <KConfigGroup>
-#include <KSharedConfig>
+#include <KApplicationTrader>
+#include <KService>
+
+static const QString s_terminal = QStringLiteral("terminal");
 
 DefaultApplications::DefaultApplications(QObject *parent)
     : QObject(parent)
 {
-    loadApps();
+    reload();
 }
 
-void DefaultApplications::loadApps()
+QList<DefaultApplications::Category> DefaultApplications::definitions() const
 {
-    QDirIterator it("/usr/share/applications", { "*.desktop" },
-                    QDir::NoFilter, QDirIterator::Subdirectories);
+    return {
+        {QStringLiteral("browser"), tr("Web Browser"),
+         {QStringLiteral("x-scheme-handler/https"), QStringLiteral("x-scheme-handler/http"), QStringLiteral("text/html"),
+          QStringLiteral("application/xhtml+xml")}},
+        {QStringLiteral("email"), tr("Email Client"), {QStringLiteral("x-scheme-handler/mailto"), QStringLiteral("message/rfc822")}},
+        {QStringLiteral("filemanager"), tr("File Manager"), {QStringLiteral("inode/directory")}},
+        {s_terminal, tr("Terminal"), {}},
+        {QStringLiteral("documents"), tr("Documents"),
+         {QStringLiteral("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+          QStringLiteral("application/msword"), QStringLiteral("application/vnd.oasis.opendocument.text"),
+          QStringLiteral("application/rtf")}},
+        {QStringLiteral("spreadsheets"), tr("Spreadsheets"),
+         {QStringLiteral("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+          QStringLiteral("application/vnd.ms-excel"), QStringLiteral("application/vnd.oasis.opendocument.spreadsheet"),
+          QStringLiteral("text/csv")}},
+        {QStringLiteral("presentations"), tr("Presentations"),
+         {QStringLiteral("application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+          QStringLiteral("application/vnd.ms-powerpoint"), QStringLiteral("application/vnd.oasis.opendocument.presentation")}},
+        {QStringLiteral("pdf"), tr("PDF"), {QStringLiteral("application/pdf")}},
+        {QStringLiteral("text"), tr("Text Editor"), {QStringLiteral("text/plain"), QStringLiteral("text/markdown")}},
+        {QStringLiteral("images"), tr("Images"),
+         {QStringLiteral("image/jpeg"), QStringLiteral("image/png"), QStringLiteral("image/gif"), QStringLiteral("image/webp"),
+          QStringLiteral("image/bmp"), QStringLiteral("image/tiff"), QStringLiteral("image/svg+xml"),
+          QStringLiteral("image/heif"), QStringLiteral("image/avif")}},
+        {QStringLiteral("video"), tr("Videos"),
+         {QStringLiteral("video/mp4"), QStringLiteral("video/x-matroska"), QStringLiteral("video/webm"),
+          QStringLiteral("video/quicktime"), QStringLiteral("video/x-msvideo"), QStringLiteral("video/mpeg")}},
+        {QStringLiteral("music"), tr("Music"),
+         {QStringLiteral("audio/mpeg"), QStringLiteral("audio/flac"), QStringLiteral("audio/ogg"),
+          QStringLiteral("audio/x-wav"), QStringLiteral("audio/mp4"), QStringLiteral("audio/x-vorbis+ogg")}},
+        {QStringLiteral("archives"), tr("Archives"),
+         {QStringLiteral("application/zip"), QStringLiteral("application/x-7z-compressed"),
+          QStringLiteral("application/x-compressed-tar"), QStringLiteral("application/vnd.rar"),
+          QStringLiteral("application/x-xz-compressed-tar")}},
+    };
+}
 
-    // Load apps
-    while (it.hasNext()) {
-        const auto fileName = it.next();
-        if (!QFile::exists(fileName))
+// Every app that opens one of the kind's types, the preferred ones first (the
+// first is the current default); hidden helpers (NoDisplay) left out
+QStringList DefaultApplications::candidates(const Category &category) const
+{
+    QStringList ids;
+    if (category.id == s_terminal) {
+        const KService::List terminals = KApplicationTrader::query([](const KService::Ptr &service) {
+            return service->categories().contains(QLatin1String("TerminalEmulator"));
+        });
+        for (const KService::Ptr &service : terminals)
+            ids << service->storageId();
+        return ids;
+    }
+
+    for (const QString &mimeType : category.mimeTypes) {
+        for (const KService::Ptr &service : KApplicationTrader::queryByMimeType(mimeType)) {
+            if (!service->noDisplay() && !ids.contains(service->storageId()))
+                ids << service->storageId();
+        }
+    }
+    return ids;
+}
+
+void DefaultApplications::reload()
+{
+    m_categories.clear();
+    m_apps.clear();
+
+    QSettings lingmoDefaults(QStringLiteral("lingmoos"), QStringLiteral("defaultApps"));
+
+    for (const Category &category : definitions()) {
+        const QStringList ids = candidates(category);
+        if (ids.isEmpty())
             continue;
 
-        DesktopProperties desktop(fileName, "Desktop Entry");
-        QString name = desktop.value(QString("Name[%1]").arg(QLocale::system().name())).toString();
-
-        if (name.isEmpty())
-            name = desktop.value("Name").toString();
-
-        AppItem item;
-        item.path = fileName;
-        item.name = name;
-        item.icon = desktop.value("Icon").toString();
-        item.mimeType = desktop.value("MimeType").toString();
-        item.categories = desktop.value("Categories").toString();
-        item.fileName = QFileInfo(fileName).fileName();
-
-        if (item.categories.contains("FileManager")
-                && item.mimeType.contains("inode/directory")) {
-            m_fileManagerList.append(item);
-        } else if (item.categories.contains("WebBrowser")
-                   && item.mimeType.contains("x-scheme-handler/http")) {
-            m_browserList.append(item);
-        } else if (item.categories.contains("Email")
-                   && item.mimeType.contains("x-scheme-handler/mailto")) {
-            m_emailList.append(item);
-        } else if (item.categories.contains("TerminalEmulator")) {
-            m_terminalList.append(item);
+        QString current;
+        if (category.id == s_terminal) {
+            // Not chosen yet: Lingmo's terminal when it's there (what the file manager
+            // falls back to is the first one it finds)
+            current = lingmoDefaults.value(s_terminal).toString();
+            if (!ids.contains(current))
+                current = ids.contains(QLatin1String("lingmo-terminal.desktop")) ? QStringLiteral("lingmo-terminal.desktop")
+                                                                                  : ids.first();
+        } else if (const KService::Ptr preferred = KApplicationTrader::preferredService(category.mimeTypes.first())) {
+            current = preferred->storageId();
         }
-    }
 
-    // Load xdg config.
-    QSettings mimeApps(mimeAppsListFilePath(), QSettings::IniFormat);
-    mimeApps.beginGroup("Default Applications");
-
-    QSettings settings("lingmoos", "defaultApps");
-
-    QString defaultBrowser = mimeApps.value("x-scheme-handler/http").toString();
-    QString defaultFM = mimeApps.value("inode/directory").toString();
-    QString defaultEMail = mimeApps.value("x-scheme-handler/mailto").toString();
-    QString defaultTerminal = settings.value("terminal").toString();
-
-    // Init indexes.
-    for (int i = 0; i < m_browserList.size(); ++i) {
-        if (defaultBrowser == m_browserList.at(i).fileName) {
-            m_browserIndex = i;
-            break;
+        QVariantList apps;
+        for (const QString &id : ids) {
+            const KService::Ptr service = KService::serviceByStorageId(id);
+            if (!service)
+                continue;
+            apps << QVariantMap{{QStringLiteral("name"), service->name()},
+                                {QStringLiteral("icon"), service->icon()},
+                                {QStringLiteral("id"), id}};
         }
+
+        m_apps.insert(category.id, ids);
+        m_categories << QVariantMap{{QStringLiteral("id"), category.id},
+                                    {QStringLiteral("title"), category.title},
+                                    {QStringLiteral("apps"), apps},
+                                    {QStringLiteral("current"), ids.indexOf(current)}};
     }
 
-    for (int i = 0; i < m_fileManagerList.size(); ++i) {
-        if (defaultFM == m_fileManagerList.at(i).fileName) {
-            m_fileManagerIndex = i;
-            break;
-        }
-    }
-
-    for (int i = 0; i < m_emailList.size(); ++i) {
-        if (defaultEMail == m_emailList.at(i).fileName) {
-            m_emailIndex = i;
-            break;
-        }
-    }
-
-    for (int i = 0; i < m_terminalList.size(); ++i) {
-        if (defaultTerminal == m_terminalList.at(i).fileName) {
-            m_terminalIndex = i;
-            break;
-        }
-    }
+    emit loadFinished();
 }
 
-QVariantList DefaultApplications::browserList()
+void DefaultApplications::setDefault(const QString &category, int index)
 {
-    QVariantList list;
-
-    for (const AppItem &item : m_browserList) {
-        QVariantMap map;
-        map["name"] = item.name;
-        map["icon"] = item.icon;
-        map["path"] = item.path;
-        list << map;
-    }
-
-    return list;
-}
-
-QVariantList DefaultApplications::fileManagerList()
-{
-    QVariantList list;
-
-    for (const AppItem &item : m_fileManagerList) {
-        QVariantMap map;
-        map["name"] = item.name;
-        map["icon"] = item.icon;
-        map["path"] = item.path;
-        list << map;
-    }
-
-    return list;
-}
-
-QVariantList DefaultApplications::emailList()
-{
-    QVariantList list;
-
-    for (const AppItem &item : m_emailList) {
-        QVariantMap map;
-        map["name"] = item.name;
-        map["icon"] = item.icon;
-        map["path"] = item.path;
-        list << map;
-    }
-
-    return list;
-}
-
-QVariantList DefaultApplications::terminalList()
-{
-    QVariantList list;
-
-    for (const AppItem &item : m_terminalList) {
-        QVariantMap map;
-        map["name"] = item.name;
-        map["icon"] = item.icon;
-        map["path"] = item.path;
-        list << map;
-    }
-
-    return list;
-}
-
-int DefaultApplications::browserIndex()
-{
-    return m_browserIndex;
-}
-
-int DefaultApplications::fileManagerIndex()
-{
-    return m_fileManagerIndex;
-}
-
-int DefaultApplications::emailIndex()
-{
-    return m_emailIndex;
-}
-
-int DefaultApplications::terminalIndex()
-{
-    return m_terminalIndex;
-}
-
-void DefaultApplications::setDefaultBrowser(int index)
-{
-    if (!m_browserList.isEmpty() && m_browserList.size() < index)
+    const QStringList ids = m_apps.value(category);
+    if (index < 0 || index >= ids.size())
         return;
 
-    const QString desktop = m_browserList.at(index).fileName;
+    if (category == s_terminal) {
+        QSettings(QStringLiteral("lingmoos"), QStringLiteral("defaultApps")).setValue(s_terminal, ids.at(index));
+        return;
+    }
 
-    setDefaultApp("x-scheme-handler/http", desktop);
-    setDefaultApp("x-scheme-handler/https", desktop);
-}
-
-void DefaultApplications::setDefaultFileManager(int index)
-{
-    if (!m_fileManagerList.isEmpty() && m_fileManagerList.size() < index)
+    const KService::Ptr service = KService::serviceByStorageId(ids.at(index));
+    if (!service)
         return;
 
-    const QString desktop = m_fileManagerList.at(index).fileName;
-
-    setDefaultApp("inode/directory", desktop);
-}
-
-void DefaultApplications::setDefaultEMail(int index)
-{
-    if (!m_emailList.isEmpty() && m_emailList.size() < index)
-        return;
-
-    const QString desktop = m_emailList.at(index).fileName;
-
-    setDefaultApp("x-scheme-handler/mailto", desktop);
-}
-
-void DefaultApplications::setDefaultTerminal(int index)
-{
-    if (!m_terminalList.isEmpty() && m_terminalList.size() < index)
-        return;
-
-    const QString desktop = m_terminalList.at(index).fileName;
-
-    qDebug() << index << desktop;
-
-    QSettings settings("lingmoos", "defaultApps");
-    settings.setValue("terminal", desktop);
-}
-
-void DefaultApplications::setDefaultApp(const QString &mimeType, const QString &path)
-{
-    KSharedConfig::Ptr profile = KSharedConfig::openConfig(QStringLiteral("mimeapps.list"),
-                                                           KConfig::NoGlobals,
-                                                           QStandardPaths::GenericConfigLocation);
-    KConfigGroup defaultApp(profile, "Default Applications");
-    defaultApp.writeXdgListEntry(mimeType, {path});
-}
-
-QString DefaultApplications::mimeAppsListFilePath() const
-{
-    return QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + QLatin1String("/mimeapps.list");
+    // Every type of the kind the app opens (a browser takes http, https and HTML)
+    for (const Category &definition : definitions()) {
+        if (definition.id != category)
+            continue;
+        for (const QString &mimeType : definition.mimeTypes) {
+            if (service->hasMimeType(mimeType))
+                KApplicationTrader::setPreferredService(mimeType, service);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 - 2022 LingmoOS Team.
+ * Copyright (C) 2021 - 2026 LingmoOS Team.
  *
  * Author:     Kate Leet <kate@lingmoos.com>
  *
@@ -21,66 +21,41 @@
 #define DEFAULTAPPLICATIONS_H
 
 #include <QObject>
+#include <QStringList>
+#include <QVariantList>
 
-class AppItem {
-public:
-    QString path;
-    QString fileName;
-    QString name;
-    QString icon;
-    QString mimeType;
-    QString categories;
-};
-
+// The app that opens each kind of thing (web links, e-mail, folders, documents,
+// pictures...). Apps come from every XDG applications folder through KService
+// (system, ~/.local, Flatpak); the choice is written to mimeapps.list for all the
+// file types of the kind the app opens. The terminal is Lingmo's own setting.
 class DefaultApplications : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVariantList browserList READ browserList NOTIFY loadFinished)
-    Q_PROPERTY(QVariantList fileManagerList READ fileManagerList NOTIFY loadFinished)
-    Q_PROPERTY(QVariantList emailList READ emailList NOTIFY loadFinished)
-    Q_PROPERTY(QVariantList terminalList READ terminalList NOTIFY loadFinished)
-    Q_PROPERTY(int browserIndex READ browserIndex NOTIFY loadFinished)
-    Q_PROPERTY(int fileManagerIndex READ fileManagerIndex NOTIFY loadFinished)
-    Q_PROPERTY(int emailIndex READ emailIndex NOTIFY loadFinished)
-    Q_PROPERTY(int terminalIndex READ terminalIndex NOTIFY loadFinished)
+    // [{id, title, apps: [{name, icon, id}], current}]
+    Q_PROPERTY(QVariantList categories READ categories NOTIFY loadFinished)
 
 public:
     explicit DefaultApplications(QObject *parent = nullptr);
 
-    void loadApps();
+    QVariantList categories() const { return m_categories; }
 
-    QVariantList browserList();
-    QVariantList fileManagerList();
-    QVariantList emailList();
-    QVariantList terminalList();
-
-    int browserIndex();
-    int fileManagerIndex();
-    int emailIndex();
-    int terminalIndex();
-
-    Q_INVOKABLE void setDefaultBrowser(int index);
-    Q_INVOKABLE void setDefaultFileManager(int index);
-    Q_INVOKABLE void setDefaultEMail(int index);
-    Q_INVOKABLE void setDefaultTerminal(int index);
-
-private:
-    void setDefaultApp(const QString &mimeType, const QString &path);
-    QString mimeAppsListFilePath() const;
+    Q_INVOKABLE void setDefault(const QString &category, int index);
+    Q_INVOKABLE void reload();
 
 signals:
     void loadFinished();
 
 private:
-    QList<AppItem> m_browserList;
-    QList<AppItem> m_fileManagerList;
-    QList<AppItem> m_emailList;
-    QList<AppItem> m_terminalList;
+    struct Category {
+        QString id;
+        QString title;
+        QStringList mimeTypes;      // the first one decides which app is the current default
+    };
+    QList<Category> definitions() const;
+    QStringList candidates(const Category &category) const;   // desktop ids (storage ids)
 
-    int m_browserIndex = -1;
-    int m_fileManagerIndex = -1;
-    int m_emailIndex = -1;
-    int m_terminalIndex = -1;
+    QVariantList m_categories;
+    QHash<QString, QStringList> m_apps;   // category id → desktop ids, in the combo box order
 };
 
 #endif // DEFAULTAPPLICATIONS_H

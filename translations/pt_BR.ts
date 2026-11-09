@@ -5341,4 +5341,59 @@
         <translation>Abrir</translation>
     </message>
 </context>
+<context>
+    <name>DefaultApplications</name>
+    <message>
+        <source>Web Browser</source>
+        <translation>Navegador</translation>
+    </message>
+    <message>
+        <source>Email Client</source>
+        <translation>Cliente de e-mail</translation>
+    </message>
+    <message>
+        <source>File Manager</source>
+        <translation>Gerenciador de arquivos</translation>
+    </message>
+    <message>
+        <source>Terminal</source>
+        <translation>Terminal</translation>
+    </message>
+    <message>
+        <source>Documents</source>
+        <translation>Documentos</translation>
+    </message>
+    <message>
+        <source>Spreadsheets</source>
+        <translation>Planilhas</translation>
+    </message>
+    <message>
+        <source>Presentations</source>
+        <translation>Apresentações</translation>
+    </message>
+    <message>
+        <source>PDF</source>
+        <translation>PDF</translation>
+    </message>
+    <message>
+        <source>Text Editor</source>
+        <translation>Editor de texto</translation>
+    </message>
+    <message>
+        <source>Images</source>
+        <translation>Imagens</translation>
+    </message>
+    <message>
+        <source>Videos</source>
+        <translation>Vídeos</translation>
+    </message>
+    <message>
+        <source>Music</source>
+        <translation>Música</translation>
+    </message>
+    <message>
+        <source>Archives</source>
+        <translation>Arquivos compactados</translation>
+    </message>
+</context>
 </TS>

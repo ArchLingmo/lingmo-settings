@@ -46,71 +46,34 @@ ItemPage {
                     columns: 2
                     columnSpacing: LingmoUI.Units.largeSpacing * 2
 
-                    Label {
-                        text: qsTr("Web Browser")
-                        enabled: browserComboBox.count !== 0
-                    }
+                    // One row per kind of thing: web links, e-mail, folders, the
+                    // terminal, documents, pictures, videos... (only kinds some
+                    // installed app opens)
+                    Repeater {
+                        model: defaultApps.categories
 
-                    AppComboBox {
-                        id: browserComboBox
-                        Layout.fillWidth: true
-                        textRole: "name"
-                        model: defaultApps.browserList
-                        currentIndex: defaultApps.browserIndex
-                        enabled: count !== 0
-                        onActivated: {
-                            defaultApps.setDefaultBrowser(browserComboBox.currentIndex)
+                        delegate: Label {
+                            required property var modelData
+                            required property int index
+                            text: modelData.title
+                            Layout.row: index
+                            Layout.column: 0
                         }
                     }
 
-                    Label {
-                        text: qsTr("File Manager")
-                        enabled: fileManagerComboBox.count !== 0
-                    }
+                    Repeater {
+                        model: defaultApps.categories
 
-                    AppComboBox {
-                        id: fileManagerComboBox
-                        Layout.fillWidth: true
-                        textRole: "name"
-                        model: defaultApps.fileManagerList
-                        currentIndex: defaultApps.fileManagerIndex
-                        enabled: count !== 0
-                        onActivated: {
-                            defaultApps.setDefaultFileManager(fileManagerComboBox.currentIndex)
-                        }
-                    }
-
-                    Label {
-                        text: qsTr("Email Client")
-                        enabled: emailComboBox.count !== 0
-                    }
-
-                    AppComboBox {
-                        id: emailComboBox
-                        Layout.fillWidth: true
-                        textRole: "name"
-                        model: defaultApps.emailList
-                        currentIndex: defaultApps.emailIndex
-                        enabled: count !== 0
-                        onActivated: {
-                            defaultApps.setDefaultEMail(emailComboBox.currentIndex)
-                        }
-                    }
-
-                    Label {
-                        text: qsTr("Terminal")
-                        enabled: terminalComboBox.count !== 0
-                    }
-
-                    AppComboBox {
-                        id: terminalComboBox
-                        Layout.fillWidth: true
-                        textRole: "name"
-                        model: defaultApps.terminalList
-                        currentIndex: defaultApps.terminalIndex
-                        enabled: count !== 0
-                        onActivated: {
-                            defaultApps.setDefaultTerminal(terminalComboBox.currentIndex)
+                        delegate: AppComboBox {
+                            required property var modelData
+                            required property int index
+                            Layout.row: index
+                            Layout.column: 1
+                            Layout.fillWidth: true
+                            textRole: "name"
+                            model: modelData.apps
+                            currentIndex: modelData.current
+                            onActivated: defaultApps.setDefault(modelData.id, currentIndex)
                         }
                     }
                 }
